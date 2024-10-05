@@ -20,12 +20,14 @@ class BuyerRegister extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               ResponsiveWidget.isSmallScreen(context) ? Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            RegisterForm()
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              RegisterForm()
+                          ],
+                        ),
                       ),
                     )
               : Expanded(
@@ -38,12 +40,14 @@ class BuyerRegister extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            RegisterForm()
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              RegisterForm()
+                          ],
+                        ),
                       ),
                     )
                 ],),

@@ -120,29 +120,33 @@ class RegisterForm extends StatelessWidget {
                             .copyWith(color: AppColors.white)),
                   ),
                   const SizedBox(height: 20,),
-                  InkWell(
-                    onTap: (){
-                      signInWithGoogle(provider, context);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.inActiveBorder),
-                        borderRadius: BorderRadius.circular(DimenConstant.buttonCornerRadius)
-                      ),
-                      padding: const EdgeInsetsDirectional.only(start: 20,end: 20, top: 10,bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: Image.asset('asset/logo/google_logo.png')),
-                          const SizedBox(width: 20,),
-                          const Text('Sign in with Google', style: TextStyle(fontSize: 16),)
-                        ],
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: InkWell(
+                      onTap: (){
+                        signInWithGoogle(provider, context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.inActiveBorder),
+                          borderRadius: BorderRadius.circular(DimenConstant.buttonCornerRadius)
+                        ),
+                        padding: const EdgeInsetsDirectional.only(start: 20,end: 20, top: 10,bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: Image.asset('asset/logo/google_logo.png')),
+                            const SizedBox(width: 20,),
+                            const Expanded(child: Text('Sign in with Google', style: TextStyle(fontSize: 16),))
+                          ],
+                        ),
                       ),
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 20,),
                 ],
               ),
             )
