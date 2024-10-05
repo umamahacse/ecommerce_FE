@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/common/styles/font_style.dart';
@@ -8,10 +10,13 @@ import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/constants/dimen_constant.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/view_model/register_viewmodel.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class RegisterForm extends StatelessWidget {
-  const RegisterForm({super.key});
+  RegisterForm({super.key});
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  String? name, imageUrl, userEmail, uid;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +118,12 @@ class RegisterForm extends StatelessWidget {
                         backgroundColor: AppColors.primaryColor,
                         textStyle: FontStyles.labelMedium
                             .copyWith(color: AppColors.white)),
-                  )
+                  ),
+                  InkWell(
+                      onTap: (){
+                        signInWithGoogle(provider, context);
+                      },
+                      child: const Text('Google sign in'))
                 ],
               ),
             )
@@ -122,4 +132,39 @@ class RegisterForm extends StatelessWidget {
       }),
     );
   }
+
+
+  Future<User?> signInWithGoogle(RegisterViewmodel provider, BuildContext context) async {
+    // Initialize Firebase
+    await Firebase.initializeApp();
+    User? user;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    // The `GoogleAuthProvider` can only be
+    // used while running on the web
+    GoogleAuthProvider authProvider = GoogleAuthProvider();
+
+
+    try {
+      final UserCredential userCredential =
+      await auth.signInWithPopup(authProvider);
+      user = userCredential.user;
+    } catch (e) {
+      print(e);
+    }
+
+    if (user != null) {
+      uid = user.uid;
+      name = user.displayName;
+      userEmail = user.email;
+      imageUrl = user.photoURL;
+      String idToken = await user.getIdToken() ?? '';
+      print("name: $name");
+      print("userEmail: $userEmail");
+      print("imageUrl: $imageUrl");
+      print("idToken: $idToken");
+
+      provider.buyerRegisterCallSocial(context, name ?? '' , userEmail ?? '', idToken);
+    }
+    return user;
+}
 }

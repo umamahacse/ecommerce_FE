@@ -19,7 +19,7 @@ class BuyerRegister extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              ResponsiveWidget.isSmallScreen(context) ? const Expanded(
+              ResponsiveWidget.isSmallScreen(context) ? Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +36,7 @@ class BuyerRegister extends StatelessWidget {
                       child: Image.asset('asset/images/register.jpeg',
                       fit: BoxFit.cover,),
                     ),
-                    const Expanded(
+                    Expanded(
                       flex: 1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

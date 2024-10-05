@@ -116,4 +116,33 @@ class RegisterViewmodel with ChangeNotifier {
           .showSnackbar();
     }
   }
+
+
+  buyerRegisterCallSocial(BuildContext context, String name, String email, String idToken) async {
+      BuyerRegisterRequestModel requestModel = BuyerRegisterRequestModel(
+          firstName: name,
+          lastName: '',
+          email: email,
+          password: '',
+          idToken: idToken);
+
+      await buyerDataSource.buyerRegisterSocial(context,requestModel)?.then((response) {
+        if (response.buyerRegisterModel != null) {
+          if (response.buyerRegisterModel?.status == 200) {
+            CustomSnackbar(
+                message: AppLocalizations.of(context).register_successful,
+                context: context)
+                .showSnackbar();
+            Future.delayed(const Duration(seconds: 2), () {
+              context.go(AppPages.auth + AppPages.buyerLogin);
+            });
+          }
+        } else {
+          CustomSnackbar(
+              message: response.errorResponseModel!.message ?? "",
+              context: context)
+              .showSnackbar();
+        }
+      });
+  }
 }
