@@ -140,7 +140,7 @@ class RegisterForm extends StatelessWidget {
                                 height: 24,
                                 child: Image.asset('asset/logo/google_logo.png')),
                             const SizedBox(width: 20,),
-                            const Expanded(child: Text('Sign in with Google', style: TextStyle(fontSize: 16),))
+                            const Flexible(child: Text('Sign in with Google', style: TextStyle(fontSize: 16),))
                           ],
                         ),
                       ),
