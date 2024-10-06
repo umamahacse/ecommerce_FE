@@ -36,22 +36,27 @@ class RegisterForm extends StatelessWidget {
                     child: const AppLogo())
                 : const SizedBox.shrink(),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  AppLocalizations.of(context).create_account,
-                  style: FontStyles.displaySmall
-                      .copyWith(fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).create_account,
+                    style: FontStyles.displaySmall
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
-                Row(
-                  children: [
-                    Text(AppLocalizations.of(context).seller_signup,
-                        style: FontStyles.labelMedium),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    const Icon(Icons.arrow_right_alt)
-                  ],
+                Flexible(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(AppLocalizations.of(context).seller_signup,
+                            style: FontStyles.labelMedium),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      const Icon(Icons.arrow_right_alt)
+                    ],
+                  ),
                 )
               ],
             ),
@@ -118,6 +123,29 @@ class RegisterForm extends StatelessWidget {
                         backgroundColor: AppColors.primaryColor,
                         textStyle: FontStyles.labelMedium
                             .copyWith(color: AppColors.white)),
+                  ),
+                  const SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Container(
+                          color: AppColors.inActiveBorder,
+                          height: 1,
+                          width: 100,
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      const Text('Or'),
+                      const SizedBox(width: 10,),
+                      Flexible(
+                        child: Container(
+                          color: AppColors.inActiveBorder,
+                          height: 1,
+                          width: 100,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20,),
                   SizedBox(
