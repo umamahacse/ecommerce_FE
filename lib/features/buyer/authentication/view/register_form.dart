@@ -44,8 +44,9 @@ class RegisterForm extends StatelessWidget {
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
-                Flexible(
+                Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Flexible(
                         child: Text(AppLocalizations.of(context).seller_signup,
