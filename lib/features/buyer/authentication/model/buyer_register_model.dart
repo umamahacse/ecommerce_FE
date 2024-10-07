@@ -22,13 +22,13 @@ class BuyerRegisterModel {
     factory BuyerRegisterModel.fromJson(Map<String, dynamic> json){ 
         return BuyerRegisterModel(
             status: json["status"],
-            data: json["data"] == null ? null : Data.fromJson(json["data"]),
+            data: json["result"] == null ? null : Data.fromJson(json["result"]),
         );
     }
 
     Map<String, dynamic> toJson() => {
         "status": status,
-        "data": data?.toJson(),
+        "result": data?.toJson(),
     };
 
     @override
