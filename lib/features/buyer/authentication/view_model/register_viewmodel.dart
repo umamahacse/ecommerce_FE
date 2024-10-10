@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/common/widget/shared/custom_snackbar.dart';
 import 'package:frontend_ecommerce/data/data_source/buyer/buyer_data_source.dart';
+import 'package:frontend_ecommerce/features/buyer/authentication/model/buyer_register_model.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/model/buyer_register_request_model.dart';
 import 'package:frontend_ecommerce/route/router_constant.dart';
 import 'package:frontend_ecommerce/utils/validators/pattern_validator.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../data/secured_storage/secured_storage.dart';
 
 class RegisterViewmodel with ChangeNotifier {
   final BuyerDataSourceImpl buyerDataSource = BuyerDataSourceImpl();
@@ -27,6 +30,7 @@ class RegisterViewmodel with ChangeNotifier {
       emailErrorText,
       passwordErrorText,
       confirmPasswordErrorText;
+  final SecureStorage _secureStorage = SecureStorage();
 
   validateEmail(context, String? value) {
     emailErrorText = PatternValidator.isValidEmail(
@@ -98,6 +102,7 @@ class RegisterViewmodel with ChangeNotifier {
                     message: AppLocalizations.of(context).register_successful,
                     context: context)
                 .showSnackbar();
+            setStorageValues(response.buyerRegisterModel);
             Future.delayed(const Duration(seconds: 2), () {
               context.go(AppPages.auth + AppPages.buyerLogin);
             });
@@ -133,6 +138,7 @@ class RegisterViewmodel with ChangeNotifier {
                 message: AppLocalizations.of(context).register_successful,
                 context: context)
                 .showSnackbar();
+            setStorageValues(response.buyerRegisterModel);
             Future.delayed(const Duration(seconds: 2), () {
               context.go(AppPages.auth + AppPages.buyerLogin);
             });
@@ -145,4 +151,12 @@ class RegisterViewmodel with ChangeNotifier {
         }
       });
   }
+
+  void setStorageValues(BuyerRegisterModel? registerData) async{
+    _secureStorage.setUserEmail(registerData?.data?.email ?? '');
+    _secureStorage.setUserFirstName(registerData?.data?.firstName ?? '');
+    _secureStorage.setUserLastName(registerData?.data?.lastName ?? '');
+    _secureStorage.setAccessToken(registerData?.accessToken ?? '');
+  }
+
 }
