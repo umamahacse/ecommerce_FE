@@ -1,10 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend_ecommerce/route/multi_provider_list.dart';
 import 'package:frontend_ecommerce/route/router_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+AndroidOptions getAndroidOptions() => const AndroidOptions(
+  encryptedSharedPreferences: true,
+);
+const options = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
 
 void main() async{
   await Firebase.initializeApp(

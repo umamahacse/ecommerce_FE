@@ -4,18 +4,22 @@ class BuyerRegisterModel {
     BuyerRegisterModel({
         required this.status,
         required this.data,
+        this.accessToken
     });
 
     final int? status;
     final Data? data;
+    final String? accessToken;
 
     BuyerRegisterModel copyWith({
         int? status,
         Data? data,
+        String? accessToken
     }) {
         return BuyerRegisterModel(
             status: status ?? this.status,
             data: data ?? this.data,
+            accessToken: accessToken
         );
     }
 
@@ -23,12 +27,14 @@ class BuyerRegisterModel {
         return BuyerRegisterModel(
             status: json["status"],
             data: json["result"] == null ? null : Data.fromJson(json["result"]),
+            accessToken: json["access_token"]
         );
     }
 
     Map<String, dynamic> toJson() => {
         "status": status,
         "result": data?.toJson(),
+        "access_token": accessToken
     };
 
     @override
