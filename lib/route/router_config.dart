@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/view/buyer_login.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/view/buyer_register.dart';
+import 'package:frontend_ecommerce/features/buyer/dashboard/view/buyer_dashboard.dart';
 import 'package:frontend_ecommerce/features/buyer/landing/view/landing_screen.dart';
 import 'package:frontend_ecommerce/route/router_constant.dart';
 import 'package:go_router/go_router.dart';
@@ -24,6 +25,12 @@ class AppRouter {
         path: AppPages.auth+AppPages.buyerLogin,
         builder: (BuildContext context, GoRouterState state) {
           return const BuyerLogin();
+        }
+      ),
+      GoRoute(
+        path: AppPages.auth+AppPages.buyerDashboard,
+        builder: (BuildContext context, GoRouterState state) {
+          return const BuyerDashboard();
         }
       ),
     ],

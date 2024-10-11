@@ -14,7 +14,9 @@ class HeaderTextBeforeLogin extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(AppLocalizations.of(context).login, style: FontStyles.labelLarge.copyWith(color: AppColors.primaryColor)),
+        InkWell(
+          onTap: () => context.go(AppPages.auth + AppPages.buyerLogin),
+          child: Text(AppLocalizations.of(context).login, style: FontStyles.labelLarge.copyWith(color: AppColors.primaryColor))),
         SizedBox(
           width: 12.w,
         ),
