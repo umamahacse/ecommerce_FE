@@ -3,9 +3,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/common/widget/shared/custom_snackbar.dart';
 import 'package:frontend_ecommerce/data/data_source/buyer/buyer_data_source.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/model/buyer_login_request_model.dart';
+import 'package:frontend_ecommerce/features/buyer/authentication/model/buyer_login_model.dart';
 import 'package:frontend_ecommerce/route/router_constant.dart';
 import 'package:frontend_ecommerce/utils/validators/pattern_validator.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../data/secured_storage/secured_storage.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   final BuyerDataSourceImpl buyerDataSource = BuyerDataSourceImpl();
@@ -14,6 +17,7 @@ class LoginViewmodel extends ChangeNotifier {
   final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
   String? emailErrorText, passwordErrorText;
+  final SecureStorage _secureStorage = SecureStorage();
 
   validateEmail(context, String? value) {
     emailErrorText = PatternValidator.isValidEmail(
@@ -46,6 +50,7 @@ class LoginViewmodel extends ChangeNotifier {
       await buyerDataSource.buyerLogin(context,requestModel)?.then((response) {
         if (response.buyerLoginResponseModel != null) {
           if (response.buyerLoginResponseModel?.status == 200) {
+            setStorageValues(response.buyerLoginResponseModel);
             Future.delayed(const Duration(seconds: 1), () {
               context.go(AppPages.buyerDashboard);
             });
@@ -64,4 +69,35 @@ class LoginViewmodel extends ChangeNotifier {
           .showSnackbar();
     }
   }
+
+  buyerRegisterCallSocial(BuildContext context, String name, String email, String idToken) async {
+    BuyerLoginRequestModel requestModel = BuyerLoginRequestModel(
+        email: email,
+        password: '',
+        idToken: idToken);
+
+    await buyerDataSource.buyerRegisterSocial<BuyerLoginResponseModel, BuyerLoginRequestModel>(context,requestModel)?.then((response) {
+      if (response.buyerLoginResponseModel != null) {
+        if (response.buyerLoginResponseModel?.status == 200) {
+          setStorageValues(response.buyerLoginResponseModel);
+          Future.delayed(const Duration(seconds: 1), () {
+            context.go(AppPages.buyerDashboard);
+          });
+        }
+      } else {
+        CustomSnackbar(
+            message: response.errorResponseModel!.message ?? "",
+            context: context)
+            .showSnackbar();
+      }
+    });
+  }
+
+  void setStorageValues(BuyerLoginModel? registerData) async{
+    _secureStorage.setUserEmail(registerData?.data?.email ?? '');
+    _secureStorage.setUserFirstName(registerData?.data?.firstName ?? '');
+    _secureStorage.setUserLastName(registerData?.data?.lastName ?? '');
+    _secureStorage.setAccessToken(registerData?.accessToken ?? '');
+  }
+
 }

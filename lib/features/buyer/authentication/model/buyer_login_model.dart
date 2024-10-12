@@ -1,45 +1,51 @@
 import 'package:frontend_ecommerce/features/shared/model/error_response.dart';
 
-class BuyerRegisterModel {
-    BuyerRegisterModel({
+class BuyerLoginModel{
+    BuyerLoginModel({
         required this.status,
+        this.accessToken,
         required this.data,
-        this.accessToken
+        required this.userId,
     });
 
     final int? status;
-    final Data? data;
     final String? accessToken;
+    final int? userId;
+    final Data? data;
 
-    BuyerRegisterModel copyWith({
+    BuyerLoginModel copyWith({
         int? status,
-        Data? data,
-        String? accessToken
+        String? accessToken,
+        int? userId,
+        Data? data
     }) {
-        return BuyerRegisterModel(
+        return BuyerLoginModel(
             status: status ?? this.status,
-            data: data ?? this.data,
-            accessToken: accessToken
+            accessToken: accessToken ?? this.accessToken,
+            userId: userId ?? this.userId,
+            data: data ?? this.data
         );
     }
 
-    factory BuyerRegisterModel.fromJson(Map<String, dynamic> json){ 
-        return BuyerRegisterModel(
+    factory BuyerLoginModel.fromJson(Map<String, dynamic> json){
+        return BuyerLoginModel(
             status: json["status"],
-            data: json["result"] == null ? null : Data.fromJson(json["result"]),
-            accessToken: json["access_token"]
+            accessToken: json["access_token"],
+            userId: json["user_id"],
+            data: json["buyerData"] == null ? null : Data.fromJson(json["buyerData"]),
         );
     }
 
     Map<String, dynamic> toJson() => {
         "status": status,
-        "result": data?.toJson(),
-        "access_token": accessToken
+        "access_token": accessToken,
+        "user_id": userId,
+        "buyerData": data?.toJson(),
     };
 
     @override
     String toString(){
-        return "$status, $data, $accessToken";
+        return "$status, $accessToken, $userId, ${data?.toJson()}";
     }
 }
 
@@ -82,7 +88,7 @@ class Data {
         );
     }
 
-    factory Data.fromJson(Map<String, dynamic> json){ 
+    factory Data.fromJson(Map<String, dynamic> json){
         return Data(
             id: json["id"],
             firstName: json["firstName"],
@@ -110,12 +116,12 @@ class Data {
     }
 }
 
-class BuyerRegisterResponseModel{
-  final BuyerRegisterModel? buyerRegisterModel;
-  final ErrorResponseModel? errorResponseModel; 
+class BuyerLoginResponseModel{
+  final BuyerLoginModel? buyerLoginResponseModel;
+  final ErrorResponseModel? errorResponseModel;
 
-  BuyerRegisterResponseModel({
-    required this.buyerRegisterModel,
+  BuyerLoginResponseModel({
+    required this.buyerLoginResponseModel,
     required this.errorResponseModel
   });
 }
