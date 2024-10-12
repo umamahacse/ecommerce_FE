@@ -30,5 +30,7 @@
   "sign_in": "Sign in",
   "enter_all_mandatory_field": "Enter all mandatory fields",
   "register_successful": "Register Successfull",
-  "internal_server_error": "Internal Server error"
+  "internal_server_error": "Internal Server error",
+  "login": "Login",
+  "sign_in_with_google": "Sign in with Google"
 }
