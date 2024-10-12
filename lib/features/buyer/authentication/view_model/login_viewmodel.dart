@@ -93,11 +93,11 @@ class LoginViewmodel extends ChangeNotifier {
     });
   }
 
-  void setStorageValues(BuyerLoginModel? registerData) async{
-    _secureStorage.setUserEmail(registerData?.data?.email ?? '');
-    _secureStorage.setUserFirstName(registerData?.data?.firstName ?? '');
-    _secureStorage.setUserLastName(registerData?.data?.lastName ?? '');
-    _secureStorage.setAccessToken(registerData?.accessToken ?? '');
+  void setStorageValues(BuyerLoginModel? loginData) async{
+    _secureStorage.setUserEmail(loginData?.data?.email ?? '');
+    _secureStorage.setUserFirstName(loginData?.data?.firstName ?? '');
+    _secureStorage.setUserLastName(loginData?.data?.lastName ?? '');
+    _secureStorage.setAccessToken(loginData?.accessToken ?? '');
   }
 
 }
