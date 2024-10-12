@@ -125,8 +125,9 @@ class RegisterViewmodel with ChangeNotifier {
 
   buyerRegisterCallSocial(BuildContext context, String name, String email, String idToken) async {
       BuyerRegisterRequestModel requestModel = BuyerRegisterRequestModel(
-          firstName: name,
+          firstName: '',
           lastName: '',
+          displayName: name,
           email: email,
           password: '',
           idToken: idToken);

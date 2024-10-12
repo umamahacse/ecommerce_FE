@@ -74,6 +74,7 @@ class LoginViewmodel extends ChangeNotifier {
     BuyerLoginRequestModel requestModel = BuyerLoginRequestModel(
         email: email,
         password: '',
+        displayName: name,
         idToken: idToken);
 
     await buyerDataSource.buyerRegisterSocial<BuyerLoginResponseModel, BuyerLoginRequestModel>(context,requestModel)?.then((response) {
