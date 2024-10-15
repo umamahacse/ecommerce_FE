@@ -125,13 +125,14 @@ class RegisterViewmodel with ChangeNotifier {
 
   buyerRegisterCallSocial(BuildContext context, String name, String email, String idToken) async {
       BuyerRegisterRequestModel requestModel = BuyerRegisterRequestModel(
-          firstName: name,
+          firstName: '',
           lastName: '',
+          displayName: name,
           email: email,
           password: '',
           idToken: idToken);
 
-      await buyerDataSource.buyerRegisterSocial(context,requestModel)?.then((response) {
+      await buyerDataSource.buyerRegisterSocial<BuyerRegisterResponseModel,BuyerRegisterRequestModel>(context,requestModel)?.then((response) {
         if (response.buyerRegisterModel != null) {
           if (response.buyerRegisterModel?.status == 200) {
             CustomSnackbar(
