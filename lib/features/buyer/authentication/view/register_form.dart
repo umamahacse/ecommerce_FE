@@ -10,8 +10,11 @@ import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/constants/dimen_constant.dart';
 import 'package:frontend_ecommerce/features/buyer/authentication/view_model/register_viewmodel.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../route/router_constant.dart';
 
 class RegisterForm extends StatelessWidget {
   RegisterForm({super.key});
@@ -45,18 +48,30 @@ class RegisterForm extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: Text(AppLocalizations.of(context).seller_signup,
-                            style: FontStyles.labelMedium),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: (){
+                          context.go(AppPages.auth+AppPages.sellerRegister);
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: Text(AppLocalizations.of(context).seller_signup,
+                                  style: FontStyles.labelMedium),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const Icon(Icons.arrow_right_alt)
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      const Icon(Icons.arrow_right_alt)
-                    ],
+                    ),
                   ),
                 )
               ],
