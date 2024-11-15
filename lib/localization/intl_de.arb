@@ -14,13 +14,15 @@
   "enter_password": "Enter password",
   "enter_email": "Enter email address",
   "password_mandatory": "Please enter a password",
-  "enter_confirm_password": "Enter confrim password",
+  "enter_confirm_password": "Enter confirm password",
   "confirm_password_mandatory": "Please enter a confirm password",
   "password_confrim_password_match": "Passwords mismatched",
   "invalid_password": "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character",
   "last_name": "Last Name",
   "email": "Email",
   "password": "Password",
+  "phone_number" : "Phone Number",
+  "enter_phone_number" : "Enter Phone Number",
   "confirm_password": "Confirm Password",
   "sing_up_with_google": "Sign up with Google",
   "sign_up_with_apple": "Sign up with Apple",
@@ -32,5 +34,6 @@
   "register_successful": "Register Successfull",
   "internal_server_error": "Internal Server error",
   "login": "Login",
-  "sign_in_with_google": "Sign in with Google"
+  "sign_in_with_google": "Sign in with Google",
+  "create_seller_account" : "Create Seller Account"
 }
