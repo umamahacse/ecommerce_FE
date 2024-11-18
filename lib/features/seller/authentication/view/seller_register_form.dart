@@ -58,7 +58,7 @@ class SellerRegisterForm extends StatelessWidget {
                     hintText: AppLocalizations.of(context).enter_first_name,
                     labelText: AppLocalizations.of(context).first_name,
                     onTextChange: (value) {
-                      // provider.validateEmail(context, value);
+                      provider.validateName(context, value, true, false);
                     },
                   ),
                   SizedBox(
@@ -71,7 +71,7 @@ class SellerRegisterForm extends StatelessWidget {
                     hintText: AppLocalizations.of(context).enter_last_name,
                     labelText: AppLocalizations.of(context).last_name,
                     onTextChange: (value) {
-                      // provider.validateEmail(context, value);
+                      provider.validateName(context, value, false, false);
                     },
                   ),
                   SizedBox(
@@ -84,7 +84,7 @@ class SellerRegisterForm extends StatelessWidget {
                     hintText: AppLocalizations.of(context).enter_phone_number,
                     labelText: AppLocalizations.of(context).phone_number,
                     onTextChange: (value) {
-                      // provider.validateEmail(context, value);
+                      provider.validatePhoneNumber(context, value, false);
                     },
                   ),
                   SizedBox(
@@ -97,7 +97,7 @@ class SellerRegisterForm extends StatelessWidget {
                     hintText: AppLocalizations.of(context).enter_email,
                     labelText: AppLocalizations.of(context).email,
                     onTextChange: (value) {
-                      // provider.validateEmail(context, value);
+                      provider.validateEmail(context, value, false);
                     },
                   ),
                   SizedBox(
@@ -111,7 +111,7 @@ class SellerRegisterForm extends StatelessWidget {
                     hintText: AppLocalizations.of(context).enter_password,
                     labelText: AppLocalizations.of(context).password,
                     onTextChange: (value) {
-                      // provider.validatePassword(context, value, true);
+                      provider.validatePassword(context, value, true, false);
                     },
                   ),
                   SizedBox(
@@ -126,8 +126,7 @@ class SellerRegisterForm extends StatelessWidget {
                     AppLocalizations.of(context).enter_confirm_password,
                     labelText: AppLocalizations.of(context).confirm_password,
                     onTextChange: (value) {
-                      // provider.validatePassword(context, value, false,
-                      //     password: provider.passwordController.text);
+                      provider.validatePassword(context, value, false, false,password: provider.passwordController.text);
                     },
                   ),
                   SizedBox(
@@ -138,7 +137,7 @@ class SellerRegisterForm extends StatelessWidget {
                     child: CustomButton(
                         buttonText: AppLocalizations.of(context).create_account,
                         onPressed: () {
-                          // provider.buyerRegisterCall(context);
+                          provider.sellerRegisterCall(context);
                         },
                         backgroundColor: AppColors.primaryColor,
                         textStyle: FontStyles.labelMedium

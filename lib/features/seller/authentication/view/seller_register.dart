@@ -35,8 +35,13 @@ class SellerRegister extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Image.asset('asset/images/register.jpeg',
-                        fit: BoxFit.cover,),
+                      child: Container(
+                        color: AppColors.inActiveBorder,
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.asset('asset/images/seller.jpeg',
+                          fit: BoxFit.cover,),
+                      ),
                     ),
                     Expanded(
                       flex: 1,

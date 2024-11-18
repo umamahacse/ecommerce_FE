@@ -8,7 +8,7 @@
   "invalid_first_name": "Please enter a valid first name",
   "invalid_last_name": "Please enter a valid last name",
   "enter_last_name": "Enter Last name",
-  "last_name_mandatory": "Please enter first name",
+  "last_name_mandatory": "Please enter last name",
   "email_mandatory": "Please enter email address",
   "invalid_email": "Please enter a valid Email address",
   "enter_password": "Enter password",
@@ -35,5 +35,7 @@
   "internal_server_error": "Internal Server error",
   "login": "Login",
   "sign_in_with_google": "Sign in with Google",
-  "create_seller_account" : "Create Seller Account"
+  "create_seller_account" : "Create Seller Account",
+  "enter_phone_number" : "Please enter phone number",
+  "invalid_phone_number": "Please enter a valid Phone Number"
 }
