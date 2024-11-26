@@ -32,6 +32,7 @@ class SellerRegister extends StatelessWidget {
               )
                   : Expanded(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       flex: 1,
@@ -47,7 +48,6 @@ class SellerRegister extends StatelessWidget {
                       flex: 1,
                       child: SingleChildScrollView(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SellerRegisterForm()

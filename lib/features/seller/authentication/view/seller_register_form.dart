@@ -8,6 +8,7 @@ import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/constants/dimen_constant.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/view_model/seller_register_view_model.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 class SellerRegisterForm extends StatelessWidget {
@@ -21,8 +22,10 @@ class SellerRegisterForm extends StatelessWidget {
       child: Consumer<SellerRegisterViewModel>(builder: (context, provider, child) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(height: 100,),
             ResponsiveWidget.isSmallScreen(context)
                 ? Container(
                 height: 100,
@@ -50,92 +53,59 @@ class SellerRegisterForm extends StatelessWidget {
                       ? 0
                       : MediaQuery.of(context).size.width / 8),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  InputTextField(
-                    formKey: provider.firstNameFormKey,
-                    controller: provider.firstNameController,
-                    errorText: provider.firstNameErrorText,
-                    hintText: AppLocalizations.of(context).enter_first_name,
-                    labelText: AppLocalizations.of(context).first_name,
-                    onTextChange: (value) {
-                      provider.validateName(context, value, true, false);
-                    },
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InternationalPhoneNumberInput(
+                          onInputChanged: (PhoneNumber number) {
+                           provider.onPhoneNumberInputChanged(number);
+                          },
+                          onInputValidated: (bool value) {
+                            provider.onPhoneNumberValidated(value);
+                          },
+                          selectorConfig: SelectorConfig(
+                            trailingSpace: false,
+                            leadingPadding: 0,
+                            selectorType: ResponsiveWidget.isSmallScreen(context)? PhoneInputSelectorType.BOTTOM_SHEET :  PhoneInputSelectorType.DROPDOWN,
+                          ),
+                          ignoreBlank: false,
+                          initialValue: provider.number,
+                          scrollPadding: EdgeInsets.zero,
+                          textFieldController: TextEditingController(),
+                          formatInput: false,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: true,
+                            decimal: true,
+                          ),
+                          inputDecoration:  InputDecoration(
+                            labelText: AppLocalizations.of(context).phone_number,
+                            hintText: AppLocalizations.of(context).enter_phone_number,
+                            hintStyle: const TextStyle(color: AppColors.hintColor),
+                            labelStyle: const TextStyle(color: AppColors.hintColor),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: provider.phoneNumberValidated? AppColors.darkBorder : AppColors.errorBorder)
+                            ),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: provider.phoneNumberValidated? AppColors.darkBorder : AppColors.errorBorder)
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: provider.phoneNumberValidated? AppColors.darkBorder : AppColors.errorBorder)
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.lastNameFormKey,
-                    controller: provider.lastNameController,
-                    errorText: provider.lastNameErrorText,
-                    hintText: AppLocalizations.of(context).enter_last_name,
-                    labelText: AppLocalizations.of(context).last_name,
-                    onTextChange: (value) {
-                      provider.validateName(context, value, false, false);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.phoneNumberFormKey,
-                    controller: provider.phoneNumberController,
-                    errorText: provider.phoneNumberErrorText,
-                    hintText: AppLocalizations.of(context).enter_phone_number,
-                    labelText: AppLocalizations.of(context).phone_number,
-                    onTextChange: (value) {
-                      provider.validatePhoneNumber(context, value, false);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.emailFormKey,
-                    controller: provider.emailController,
-                    errorText: provider.emailErrorText,
-                    hintText: AppLocalizations.of(context).enter_email,
-                    labelText: AppLocalizations.of(context).email,
-                    onTextChange: (value) {
-                      provider.validateEmail(context, value, false);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.passwordFormKey,
-                    controller: provider.passwordController,
-                    errorText: provider.passwordErrorText,
-                    isObscureText: true,
-                    hintText: AppLocalizations.of(context).enter_password,
-                    labelText: AppLocalizations.of(context).password,
-                    onTextChange: (value) {
-                      provider.validatePassword(context, value, true, false);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.confirmPasswordFormKey,
-                    controller: provider.confirmPasswordController,
-                    errorText: provider.confirmPasswordErrorText,
-                    isObscureText: true,
-                    hintText:
-                    AppLocalizations.of(context).enter_confirm_password,
-                    labelText: AppLocalizations.of(context).confirm_password,
-                    onTextChange: (value) {
-                      provider.validatePassword(context, value, false, false,password: provider.passwordController.text);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
+                    height: DimenConstant.bigContentSpacing,
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: CustomButton(
-                        buttonText: AppLocalizations.of(context).create_account,
+                        buttonText: AppLocalizations.of(context).register_with_otp,
                         onPressed: () {
                           provider.sellerRegisterCall(context);
                         },

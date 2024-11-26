@@ -2,6 +2,7 @@
   "login": "Login",
   "signup": "Sign up",
   "create_account": "Create an Account",
+  "register_with_otp": "Register with OTP",
   "first_name": "First Name",
   "enter_first_name": "Enter First name",
   "first_name_mandatory": "Please enter first name",
@@ -36,6 +37,7 @@
   "login": "Login",
   "sign_in_with_google": "Sign in with Google",
   "create_seller_account" : "Create Seller Account",
-  "enter_phone_number" : "Please enter phone number",
-  "invalid_phone_number": "Please enter a valid Phone Number"
+  "enter_phone_number" : "Enter phone number",
+  "invalid_phone_number": "Please enter a valid Phone Number",
+  "otp_sent": "OTP sent"
 }

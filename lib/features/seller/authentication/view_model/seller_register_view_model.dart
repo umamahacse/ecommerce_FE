@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_request_model.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../../../../common/widget/shared/custom_snackbar.dart';
 import '../../../../data/data_source/seller/seller_data_source.dart';
@@ -11,7 +13,7 @@ import '../model/seller_register_model.dart';
 import '../model/seller_register_request_model.dart';
 
 class SellerRegisterViewModel extends ChangeNotifier{
-  final SellerDataSourceImpl buyerDataSource = SellerDataSourceImpl();
+  final SellerDataSourceImpl sellerDataSource = SellerDataSourceImpl();
   TextEditingController firstNameController = TextEditingController(text: "");
   TextEditingController lastNameController = TextEditingController(text: "");
   TextEditingController phoneNumberController = TextEditingController(text: "");
@@ -33,6 +35,27 @@ class SellerRegisterViewModel extends ChangeNotifier{
       phoneNumberErrorText,
       passwordErrorText,
       confirmPasswordErrorText;
+
+  String phoneNumber = '';
+  String initialCountry = 'US';
+  String initialDialCode = '+1';
+  PhoneNumber number = PhoneNumber(isoCode: 'US');
+  bool phoneNumberValidated = true;
+
+
+
+
+  onPhoneNumberInputChanged(PhoneNumber phoneNumberValue){
+    initialCountry = phoneNumberValue.isoCode ?? 'US';
+    initialDialCode = phoneNumberValue.dialCode ?? '+1';
+    phoneNumber = phoneNumberValue.phoneNumber ?? '';
+    notifyListeners();
+  }
+
+  void onPhoneNumberValidated(bool value){
+    phoneNumberValidated = value;
+    notifyListeners();
+  }
 
 
   validateEmail(context, String? value, bool? isForFinalCheck) {
@@ -57,26 +80,11 @@ class SellerRegisterViewModel extends ChangeNotifier{
     }
   }
 
-  validatePhoneNumber(context, String? value, bool? isForFinalCheck) {
-    if(isForFinalCheck ?? false){
-      String? str = PatternValidator.isValidPhoneNumber(
-          context,
-          value,
-          '',
-          '');
-      if(str == null){
-        return true;
-      }else {
-        return false;
+  validatePhoneNumber(context) {
+      if(phoneNumber.isNotEmpty){
+        return phoneNumberValidated;
       }
-    }else{
-      phoneNumberErrorText = PatternValidator.isValidPhoneNumber(
-          context,
-          value,
-          AppLocalizations.of(context).enter_phone_number,
-          AppLocalizations.of(context).invalid_phone_number);
-      notifyListeners();
-    }
+     return false;
   }
 
   validateName(context, String? value, bool isFirstName, bool? isForFinalCheck) {
@@ -154,8 +162,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }}
 
   bool validateInputs(context) {
-    return (validateName(context, firstNameController.text, true, true) && validateName(context, lastNameController.text, false, true) &&
-        validateEmail(context, emailController.text, true) && validatePhoneNumber(context, phoneNumberController.text, true) && validatePassword(context, passwordController.text, true, true) && validatePassword(context, confirmPasswordController.text, false, true, password: passwordController.text));
+    return (validatePhoneNumber(context));
   }
 
 
@@ -165,18 +172,28 @@ class SellerRegisterViewModel extends ChangeNotifier{
           firstName: firstNameController.text,
           lastName: lastNameController.text,
           email: emailController.text,
-          password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: phoneNumberController.text);
+          password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: (phoneNumber ?? ''));
 
-      await buyerDataSource.buyerRegister(context,requestModel)?.then((response) {
+      await sellerDataSource.sellerRegister(context,requestModel)?.then((response) async{
         if (response.sellerRegisterModel != null) {
           if (response.sellerRegisterModel?.status == 200) {
-            CustomSnackbar(
-                message: AppLocalizations.of(context).register_successful,
-                context: context)
-                .showSnackbar();
-            setStorageValues(response.sellerRegisterModel);
-            Future.delayed(const Duration(seconds: 2), () {
-              context.go(AppPages.auth + AppPages.sellerDashBoard);
+
+            SellerOTPRequestModel sellerOTPRequestModel = SellerOTPRequestModel(phoneNumber: response.sellerRegisterModel?.data?.phoneNumber);
+
+            await sellerDataSource.generateOtp(context, sellerOTPRequestModel)?.then((onValue) async{
+
+              if(onValue.sellerOTPRegisterModel != null){
+                if(onValue.sellerOTPRegisterModel?.status == 200 ){
+                  Future.delayed(const Duration(seconds: 2), () {
+                    // context.go(AppPages.auth + AppPages.sellerDashBoard);
+                  });
+                }
+              }else{
+                CustomSnackbar(
+                    message: onValue.errorResponseModel!.message ?? "",
+                    context: context)
+                    .showSnackbar();
+              }
             });
           }
         } else {
@@ -187,10 +204,19 @@ class SellerRegisterViewModel extends ChangeNotifier{
         }
       });
     } else {
-      CustomSnackbar(
-          message: AppLocalizations.of(context).enter_all_mandatory_field,
-          context: context)
-          .showSnackbar();
+      if(phoneNumber.isNotEmpty){
+        if(!phoneNumberValidated){
+          CustomSnackbar(
+              message: AppLocalizations.of(context).invalid_phone_number,
+              context: context)
+              .showSnackbar();
+        }
+      }else{
+        CustomSnackbar(
+            message: 'Please enter phone number',
+            context: context)
+            .showSnackbar();
+      }
     }
   }
 

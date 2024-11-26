@@ -22,5 +22,6 @@ class AppColors{
 
 //default colors
   static const Color white = Colors.white;
+  static const Color darkBorder = Color(0xff272727);
   static const Color transperant = Colors.transparent;
 }
