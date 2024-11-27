@@ -91,7 +91,7 @@ class SellerRegisterForm extends StatelessWidget {
                         selectorType: ResponsiveWidget.isSmallScreen(context)? PhoneInputSelectorType.BOTTOM_SHEET :  PhoneInputSelectorType.DROPDOWN,
                       ),
                       ignoreBlank: false,
-                      initialValue: provider.number,
+                      initialValue: PhoneNumber(phoneNumber: provider.phoneNumber, dialCode: provider.initialDialCode, isoCode: provider.initialCountry),
                       scrollPadding: EdgeInsets.zero,
                       textFieldController: TextEditingController(),
                       formatInput: false,
