@@ -58,7 +58,7 @@ class SellerDataSourceImpl implements BuyerDataSource{
     ErrorResponseModel? errorResponseModel;
     SellerVerifyOTPRegisterModel? sellerVerifyOTPRegisterModel;
 
-    Response response = await apiService.post(SellerApiEndpoints.sellerGenerateOTP, data);
+    Response response = await apiService.post(SellerApiEndpoints.sellerVerifyOTP, data);
     if(response.statusCode == 200){
       sellerVerifyOTPRegisterModel = SellerVerifyOTPRegisterModel.fromJson(response.data);
     } else{
