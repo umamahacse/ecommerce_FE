@@ -8,17 +8,21 @@ import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/constants/dimen_constant.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/view_model/seller_register_view_model.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common/widget/shared/input_phone_number_field.dart';
+import '../../../../route/router_constant.dart';
 import '../../../../utils/otp_input_field.dart';
 import '../../../../utils/timer_provider.dart';
 import '../../../../utils/utils.dart';
 
 class SellerRegisterForm extends StatelessWidget {
-  const SellerRegisterForm({super.key, this.isDeskTop});
+  const SellerRegisterForm({super.key, this.isDeskTop = false, this.showBackText = false, this.showBackIcon = false});
 
   final bool? isDeskTop;
+  final bool? showBackText;
+  final bool? showBackIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +42,15 @@ class SellerRegisterForm extends StatelessWidget {
   Widget phoneNumberUI(BuildContext context,SellerRegisterViewModel provider){
     return Column(
       children: [
+        if(showBackIcon ?? false)Align(
+          alignment: Alignment.topLeft,
+          child: InkWell(
+              onTap: (){
+                context.go(AppPages.landing);
+              },
+              child: const Icon(Icons.close,color: AppColors.darkBorder,size: 30,)),
+        ),
+        if(showBackIcon ?? false)const SizedBox(height: 20,),
         Text(
           AppLocalizations.of(context).welcome,
           style: FontStyles.displayLarge
@@ -90,7 +103,7 @@ class SellerRegisterForm extends StatelessWidget {
   Widget otpVerifyUI(BuildContext context,SellerRegisterViewModel provider){
     return Column(
       children: [
-        Row(
+        if(!(showBackText ?? false))Row(
           children: [
             InkWell(
                 onTap: (){
@@ -163,6 +176,16 @@ class SellerRegisterForm extends StatelessWidget {
                       .copyWith(color: AppColors.white)),
             ),
             const SizedBox(height: 20,),
+            InkWell(
+              onTap: (){
+                provider.toggleOtpScreen(false);
+              },
+              child: Container(
+                  decoration: BoxDecoration(color: AppColors.darkBorder,
+                  borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsetsDirectional.only(start: 20,end: 20, top: 5, bottom: 5),
+                  child:  Text(AppLocalizations.of(context).back_button_text, style: const TextStyle(color: AppColors.white,fontWeight: FontWeight.bold,))),
+            )
           ],
         )
       ],

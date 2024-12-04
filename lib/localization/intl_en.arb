@@ -46,5 +46,6 @@
   "welcome": "Welcome",
   "not_receive_otp" : "OTP not received?",
   "send_again" : "Send again",
-  "resend_otp_in" : "Resend OTP in"
+  "resend_otp_in" : "Resend OTP in",
+  "back_button_text": "Back"
 }

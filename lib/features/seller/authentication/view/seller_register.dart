@@ -49,30 +49,21 @@ class SellerRegister extends StatelessWidget {
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          child:  Column(
+          child:  const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 20,top: 20),
-                child: InkWell(
-                    onTap: (){
-                      context.go(AppPages.landing);
-                    },
-                    child: const Icon(Icons.close,color: AppColors.darkBorder,size: 30,)),
-              ),
-              const SizedBox(height: 20,),
-              const Expanded(
+              SizedBox(height: 20,),
+              Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       Padding(
                         padding: EdgeInsetsDirectional.only(start: 20, end: 20, top: 20, bottom: 20),
-                        child: SellerRegisterForm(),
+                        child: SellerRegisterForm(showBackText: false,showBackIcon: true,),
                       )
                     ],
                   ),
@@ -102,7 +93,7 @@ class SellerRegister extends StatelessWidget {
                 child: renderForm(context, 60, 60, 30, 30,true, 10, 10, false),
               )else
                 Expanded(
-                  child: renderFormVertically(context, 60, 60, 30, 30,true, 50, 50, false),
+                  child: renderCarouselVertically(context, 60, 60, 30, 30,true, 50, 50, false),
                 )
             ],
           ),
@@ -134,7 +125,7 @@ class SellerRegister extends StatelessWidget {
   }
 
 
-  Widget renderFormVertically(BuildContext context, double startPadding, double endPadding, double topPadding, double bottomPadding, bool showCarousel, double formStartPadding, double formEndPadding, bool isDesktop){
+  Widget renderCarouselVertically(BuildContext context, double startPadding, double endPadding, double topPadding, double bottomPadding, bool showCarousel, double formStartPadding, double formEndPadding, bool isDesktop){
     return Container(
       padding: EdgeInsetsDirectional.only(start: startPadding, end: endPadding, top: topPadding, bottom: bottomPadding),
       decoration: const BoxDecoration(
@@ -145,20 +136,25 @@ class SellerRegister extends StatelessWidget {
       ),
       child: Container(
         color: AppColors.white,
-        child: Column(
+        child: showCarousel?  SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  constraints: const BoxConstraints(maxHeight: 300),
+                  child: slider(context, isDesktop,showClose: true)),
+              const SizedBox(height: 10,),
+              Padding(
+                padding: EdgeInsetsDirectional.only(start: formStartPadding,end: formEndPadding),
+                child: const SellerRegisterForm(showBackText: true,),
+              ),
+            ]
+          ),
+         ) :  Column(
           children: [
-            if(showCarousel)Column(
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 300,
-                    child: slider(context, isDesktop)),
-              ],
-            ),
-            const SizedBox(height: 10,),
             Expanded(child: Padding(
               padding: EdgeInsetsDirectional.only(start: formStartPadding,end: formEndPadding),
-              child: const SingleChildScrollView(child: SellerRegisterForm()),
+              child: const SingleChildScrollView(child: SellerRegisterForm(showBackText: true,)),
             )),
           ],
         ),
@@ -210,7 +206,7 @@ class SellerRegister extends StatelessWidget {
     );
   }
 
-  Widget slider(BuildContext context, bool isDesktop){
+  Widget slider(BuildContext context, bool isDesktop, {bool? showClose = false}){
 
     final List<CarouselModel> carouseModel = [
       CarouselModel(imgUrl: 'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',desc: "We move at a pace that’s unmatched, rolling out new features while others struggle with outdated systems. While they\’re busy fixing legacy issues, we\’re already implementing the next big thing.Our speed gives us the edge in an ever-evolving market.", rating: 5,designation: 'Founder, catalog',orgFeature: 'Web design agency',writerName: 'Sophie Hall'),
@@ -219,133 +215,153 @@ class SellerRegister extends StatelessWidget {
       CarouselModel(imgUrl: 'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',desc: "We push boundaries by releasing products at a rate that’s far beyond industry standards.While our competitors are stuck in legacy code, we’re already integrating the future.Our consistent releases set us apart, keeping our users engaged and satisfied.", rating: 5,designation: 'Founder, catalog',orgFeature: 'Web design agency',writerName: 'Sophie Hall'),
       CarouselModel(imgUrl: 'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',desc: "We stay ahead of the curve, constantly deploying new features while others deal with inefficiencies.While they're hindered by design debt, we’re driving growth with innovative releases.Our speed keeps us agile and responsive in a fast-paced market.", rating: 5,designation: 'Founder, catalog',orgFeature: 'Web design agency',writerName: 'Sophie Hall')];
 
-    return CarouselSlider(
-      carouselController: _controller,
-      options: CarouselOptions(
-        viewportFraction: 1.0,
-        aspectRatio: 1,
-        autoPlay: true,
-        enlargeCenterPage: false,
-        enableInfiniteScroll: true,
-        autoPlayInterval: const Duration(seconds: 5)
-      ),
-      items: carouseModel
-          .map((item) => Stack(
-            children: [
-              Positioned.fill(child: Image.network(item.imgUrl ?? '', fit: BoxFit.cover)),
-              Container(
-                height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.0),
-                      Colors.black.withOpacity(0.3),
-                    ],
-                    // ignore: prefer_const_literals_to_create_immutables
-                    stops: [0.0, 1.0],
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(item.desc ?? '', style: isDesktop?  FontStyles.labelLarge
-                                    .copyWith(color: AppColors.white, fontWeight: FontWeight.bold) : FontStyles.labelMedium
-                                    .copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 30,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    StarRating(
-                                      color: AppColors.white,
-                                      onRatingChanged: (value){},
-                                      rating: item.rating?.toDouble() ?? 0,
-                                      starCount: 5,
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(item.writerName ?? '', style: isDesktop? FontStyles.labelLarge
-                                        .copyWith(color: AppColors.white,fontWeight: FontWeight.bold) : FontStyles.labelMedium
-                                        .copyWith(color: AppColors.white,fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                                const SizedBox(height: 7,),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CarouselSlider(
+            carouselController: _controller,
+            options: CarouselOptions(
+              viewportFraction: 1.0,
+              aspectRatio: 1,
+              autoPlay: true,
+              enlargeCenterPage: false,
+              enableInfiniteScroll: true,
+              autoPlayInterval: const Duration(seconds: 5)
+            ),
+            items: carouseModel
+                .map((item) => Stack(
+                  children: [
+                    Positioned.fill(child: Image.network(item.imgUrl ?? '', fit: BoxFit.cover)),
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        gradient: LinearGradient(
+                          begin: FractionalOffset.topCenter,
+                          end: FractionalOffset.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.0),
+                            Colors.black.withOpacity(0.3),
+                          ],
+                          // ignore: prefer_const_literals_to_create_immutables
+                          stops: [0.0, 1.0],
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(item.desc ?? '', style: isDesktop?  FontStyles.labelLarge
+                                          .copyWith(color: AppColors.white, fontWeight: FontWeight.bold) : FontStyles.labelMedium
+                                          .copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
+                                      const SizedBox(height: 30,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(item.designation ?? '', style: isDesktop? FontStyles.labelMedium
-                                              .copyWith(color: AppColors.inActiveBorder) : FontStyles.labelSmall
-                                              .copyWith(color: AppColors.inActiveBorder)),
-                                          const SizedBox(height: 5,),
-                                          Text(item.orgFeature ?? '', style: isDesktop? FontStyles.labelSmall
-                                              .copyWith(color: AppColors.inActiveBorder,fontSize: 10) : FontStyles.labelVerySmall
-                                              .copyWith(color: AppColors.inActiveBorder,fontSize: 10)),
+                                          StarRating(
+                                            color: AppColors.white,
+                                            onRatingChanged: (value){},
+                                            rating: item.rating?.toDouble() ?? 0,
+                                            starCount: 5,
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () => _controller.previousPage(),
-                                          style:  ButtonStyle(
-                                              shape: WidgetStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(70.0),
-                                                ),
-                                              ),
-                                              surfaceTintColor: WidgetStateProperty.all(
-                                                  AppColors.focusedBorder
-                                              )),
-                                          child: const Text('←', style: TextStyle(color: AppColors.darkBorder)),
-                                        ),
-                                        const SizedBox(width: 10,),
-                                        ElevatedButton(
-                                          onPressed: () => _controller.nextPage(),
-                                          style: ButtonStyle(
-                                            shape: WidgetStateProperty.all(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(100.0),
-                                              ),
-                                            ),
-                                            surfaceTintColor: WidgetStateProperty.all(
-                                                AppColors.focusedBorder
+                                      Row(
+                                        children: [
+                                          Text(item.writerName ?? '', style: isDesktop? FontStyles.labelLarge
+                                              .copyWith(color: AppColors.white,fontWeight: FontWeight.bold) : FontStyles.labelMedium
+                                              .copyWith(color: AppColors.white,fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 7,),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(item.designation ?? '', style: isDesktop? FontStyles.labelMedium
+                                                    .copyWith(color: AppColors.inActiveBorder) : FontStyles.labelSmall
+                                                    .copyWith(color: AppColors.inActiveBorder)),
+                                                const SizedBox(height: 5,),
+                                                Text(item.orgFeature ?? '', style: isDesktop? FontStyles.labelSmall
+                                                    .copyWith(color: AppColors.inActiveBorder,fontSize: 10) : FontStyles.labelVerySmall
+                                                    .copyWith(color: AppColors.inActiveBorder,fontSize: 10)),
+                                              ],
                                             ),
                                           ),
-                                          child: const Text('→', style: TextStyle(color: AppColors.darkBorder),),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                          Row(
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () => _controller.previousPage(),
+                                                style:  ButtonStyle(
+                                                    shape: WidgetStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(70.0),
+                                                      ),
+                                                    ),
+                                                    surfaceTintColor: WidgetStateProperty.all(
+                                                        AppColors.focusedBorder
+                                                    )),
+                                                child: const Text('←', style: TextStyle(color: AppColors.darkBorder)),
+                                              ),
+                                              const SizedBox(width: 10,),
+                                              ElevatedButton(
+                                                onPressed: () => _controller.nextPage(),
+                                                style: ButtonStyle(
+                                                  shape: WidgetStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(100.0),
+                                                    ),
+                                                  ),
+                                                  surfaceTintColor: WidgetStateProperty.all(
+                                                      AppColors.focusedBorder
+                                                  ),
+                                                ),
+                                                child: const Text('→', style: TextStyle(color: AppColors.darkBorder),),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(height: 30,),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(height: 30,),
-                              ],
-                            ),
+                              )
+          
+                            ],
                           ),
-                        )
-
-                      ],
+                        )),
+                  ],
+                ))
+                .toList(),
+          ),
+        ),
+        if(showClose ?? false)Positioned(
+            left: 20,
+            top: 20,
+            child: InkWell(
+                onTap: (){
+                  context.go(AppPages.landing);
+                },
+                child: Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.white,
                     ),
-                  )),
-            ],
-          ))
-          .toList(),
+                    padding: const EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.close,color: AppColors.darkBorder,size: 10,weight: 10,)))),
+      ],
     );
   }
 
