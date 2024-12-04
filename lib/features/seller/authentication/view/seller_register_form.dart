@@ -185,7 +185,9 @@ class SellerRegisterForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30)),
                   padding: const EdgeInsetsDirectional.only(start: 20,end: 20, top: 5, bottom: 5),
                   child:  Text(AppLocalizations.of(context).back_button_text, style: const TextStyle(color: AppColors.white,fontWeight: FontWeight.bold,))),
-            )
+            ),
+            if(showBackText ?? false)
+              const SizedBox(height: 20,),
           ],
         )
       ],
