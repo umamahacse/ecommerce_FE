@@ -176,7 +176,7 @@ class SellerRegisterForm extends StatelessWidget {
                       .copyWith(color: AppColors.white)),
             ),
             const SizedBox(height: 20,),
-            InkWell(
+            if(showBackText ?? false)InkWell(
               onTap: (){
                 provider.toggleOtpScreen(false);
               },
