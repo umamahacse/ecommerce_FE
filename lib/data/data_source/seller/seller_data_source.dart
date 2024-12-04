@@ -54,18 +54,23 @@ class SellerDataSourceImpl implements BuyerDataSource{
 
   @override
   Future<SellerVerifyOTPResponseModel>? verifyOtp(BuildContext context, SellerOTPVerifyRequestModel data) async{
-    final apiService = ApiService(context);
-    ErrorResponseModel? errorResponseModel;
-    SellerVerifyOTPRegisterModel? sellerVerifyOTPRegisterModel;
+    try{
+      final apiService = ApiService(context);
+      ErrorResponseModel? errorResponseModel;
+      SellerVerifyOTPRegisterModel? sellerVerifyOTPRegisterModel;
 
-    Response response = await apiService.post(SellerApiEndpoints.sellerVerifyOTP, data);
-    if(response.statusCode == 200){
-      sellerVerifyOTPRegisterModel = SellerVerifyOTPRegisterModel.fromJson(response.data);
-    } else{
-      errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      Response response = await apiService.post(SellerApiEndpoints.sellerVerifyOTP, data);
+      if(response.statusCode == 200){
+        sellerVerifyOTPRegisterModel = SellerVerifyOTPRegisterModel.fromJson(response.data);
+      } else{
+        errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      }
+
+      return SellerVerifyOTPResponseModel(sellerVerifyOTPRegisterModel: sellerVerifyOTPRegisterModel, errorResponseModel: errorResponseModel);
+    }catch(e){
+      rethrow;
     }
 
-    return SellerVerifyOTPResponseModel(sellerVerifyOTPRegisterModel: sellerVerifyOTPRegisterModel, errorResponseModel: errorResponseModel);
   }
 
 

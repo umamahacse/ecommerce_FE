@@ -37,7 +37,7 @@ class AppRouter {
       GoRoute(
           path: AppPages.auth+AppPages.sellerRegister,
           builder: (BuildContext context, GoRouterState state) {
-            return const SellerRegister();
+            return SellerRegister();
           }
       ),
     ],

@@ -14,7 +14,7 @@ class AppColors{
 
 //Border color
   static const Color inActiveBorder = Color(0xffe6e6e6);
-  static const Color focusedBorder = Colors.lightBlue;
+  static const Color focusedBorder = Colors.black;
   static const Color activeBorder = Colors.blue;
   static const Color errorBorder = Colors.red;
 
@@ -24,4 +24,8 @@ class AppColors{
   static const Color white = Colors.white;
   static const Color darkBorder = Color(0xff272727);
   static const Color transperant = Colors.transparent;
+  static const Color blueTransparent = Color(0xffddeafd);
+  static const Color sellerSignUpBg = Color(0xffe6e7ea);
+  static const Color sellerButtonBg = Color(0xff101522);
+  static const Color greyButtonBg = Color(0xff949698);
 }

@@ -41,5 +41,10 @@
   "invalid_phone_number": "Please enter a valid Phone Number",
   "otp_sent": "OTP sent",
   "verify_otp" : "Verify OTP",
-    "verify" : "Verify"
+    "verify" : "Verify",
+    "please_enter_your_details" : "Please enter your details",
+    "welcome": "Welcome",
+    "not_receive_otp" : "OTP not received?",
+      "send_again" : "Send again",
+      "resend_otp_in" : "Resend OTP in"
 }

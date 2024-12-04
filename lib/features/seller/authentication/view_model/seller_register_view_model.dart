@@ -1,10 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_request_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_request_model.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:otp_pin_field/otp_pin_field.dart';
 
 import '../../../../common/widget/shared/custom_snackbar.dart';
 import '../../../../data/data_source/seller/seller_data_source.dart';
@@ -30,9 +29,10 @@ class SellerRegisterViewModel extends ChangeNotifier{
   final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> confirmPasswordFormKey = GlobalKey<FormState>();
   final SecureStorage _secureStorage = SecureStorage();
-  final otpPinFieldController = GlobalKey<OtpPinFieldState>();
   bool isOtpScreen = false;
-  String otp = "0000";
+  String otp = "";
+  bool? registerLoading = false;
+  bool? verifyOtpLoading = false;
 
   String? firstNameErrorText,
       lastNameErrorText,
@@ -44,21 +44,25 @@ class SellerRegisterViewModel extends ChangeNotifier{
   String phoneNumber = '';
   String initialCountry = 'US';
   String initialDialCode = '+1';
-  PhoneNumber number = PhoneNumber(isoCode: 'US');
   bool phoneNumberValidated = true;
 
-
-
-
-  onPhoneNumberInputChanged(PhoneNumber phoneNumberValue){
-    initialCountry = phoneNumberValue.isoCode ?? 'US';
-    initialDialCode = phoneNumberValue.dialCode ?? '+1';
-    phoneNumber = phoneNumberValue.phoneNumber ?? '';
+  onDialCodeChanged(String? value){
+    initialDialCode = value ?? '+1';
     notifyListeners();
   }
 
-  void onPhoneNumberValidated(bool value){
+  onPhoneNumberChanged(String? value){
+    phoneNumber = value ?? '';
+    notifyListeners();
+  }
+
+  onPhoneNumberValidated(bool value){
     phoneNumberValidated = value;
+    notifyListeners();
+  }
+
+  onOtpChanged(String value){
+    otp= value;
     notifyListeners();
   }
 
@@ -173,11 +177,13 @@ class SellerRegisterViewModel extends ChangeNotifier{
 
   sellerRegisterCall(BuildContext context) async {
     if (validateInputs(context)) {
+      registerLoading = true;
+      notifyListeners();
       SellerRegisterRequestModel requestModel = SellerRegisterRequestModel(
           firstName: firstNameController.text,
           lastName: lastNameController.text,
           email: emailController.text,
-          password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: (phoneNumber ?? ''));
+          password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: (getPhoneNumber()));
 
       await sellerDataSource.sellerRegister(context,requestModel)?.then((response) async{
         if (response.sellerRegisterModel != null) {
@@ -213,44 +219,21 @@ class SellerRegisterViewModel extends ChangeNotifier{
     }
   }
 
+  String getPhoneNumber(){
+    return initialDialCode + phoneNumber;
+  }
+
+
   generateOtp(BuildContext context,String phone) async{
 
     SellerOTPRequestModel sellerOTPRequestModel = SellerOTPRequestModel(phoneNumber: phone);
 
-    await sellerDataSource.generateOtp(context, sellerOTPRequestModel)?.then((onValue) async{
-
-      if(onValue.sellerOTPRegisterModel != null){
-        if(onValue.sellerOTPRegisterModel?.status == 200 ){
-          toggleOtpScreen(true);
-        }else{
-          CustomSnackbar(
-              message: onValue.errorResponseModel!.message ?? "",
-              context: context)
-              .showSnackbar();
-        }
-      }else{
-        CustomSnackbar(
-            message: onValue.errorResponseModel!.message ?? "",
-            context: context)
-            .showSnackbar();
-      }
-    });
-  }
-
-
-  verifyOtp(context) async{
-    if(otp.length >= 4){
-      SellerOTPVerifyRequestModel sellerVerifyOTPRequestModel = SellerOTPVerifyRequestModel(otp: otp, phoneNumber: phoneNumber);
-
-      await sellerDataSource.verifyOtp(context, sellerVerifyOTPRequestModel)?.then((onValue) async{
-
-        if(onValue.sellerVerifyOTPRegisterModel != null){
-          if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
-            // Move to Home page
-            CustomSnackbar(
-                message: 'OTP Verified',
-                context: context)
-                .showSnackbar();
+    try{
+      await sellerDataSource.generateOtp(context, sellerOTPRequestModel)?.then((onValue) async{
+        if(onValue.sellerOTPRegisterModel != null){
+          if(onValue.sellerOTPRegisterModel?.status == 200 ){
+            registerLoading = false;
+            toggleOtpScreen(true);
           }else{
             CustomSnackbar(
                 message: onValue.errorResponseModel!.message ?? "",
@@ -258,12 +241,67 @@ class SellerRegisterViewModel extends ChangeNotifier{
                 .showSnackbar();
           }
         }else{
+          registerLoading = false;
+          notifyListeners();
           CustomSnackbar(
               message: onValue.errorResponseModel!.message ?? "",
               context: context)
               .showSnackbar();
         }
       });
+    }on DioException catch (e) {
+      registerLoading = false;
+      notifyListeners();
+      CustomSnackbar(
+          message: e.response?.data['message'],
+          context: context)
+          .showSnackbar();
+    }
+  }
+
+
+  verifyOtp(context) async{
+    if(otp.length >= 6){
+      verifyOtpLoading = true;
+      notifyListeners();
+      SellerOTPVerifyRequestModel sellerVerifyOTPRequestModel = SellerOTPVerifyRequestModel(otp: otp, phoneNumber: getPhoneNumber());
+
+      try{
+        await sellerDataSource.verifyOtp(context, sellerVerifyOTPRequestModel)?.then((onValue) async{
+
+          if(onValue.sellerVerifyOTPRegisterModel != null){
+            verifyOtpLoading = false;
+            notifyListeners();
+            if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
+              // Move to Home page
+              CustomSnackbar(
+                  message: 'OTP Verified',
+                  context: context)
+                  .showSnackbar();
+            }else{
+              CustomSnackbar(
+                  message: onValue.errorResponseModel!.message ?? "",
+                  context: context)
+                  .showSnackbar();
+            }
+          }else{
+            verifyOtpLoading = false;
+            notifyListeners();
+            CustomSnackbar(
+                message: onValue.errorResponseModel!.message ?? "",
+                context: context)
+                .showSnackbar();
+          }
+        });
+      }on DioException catch (e) {
+        verifyOtpLoading = false;
+        notifyListeners();
+        CustomSnackbar(
+            message: e.response?.data['message'],
+            context: context)
+            .showSnackbar();
+      }
+
 
     }else{
       CustomSnackbar(
