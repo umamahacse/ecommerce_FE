@@ -16,33 +16,22 @@ import '../../../../utils/timer_provider.dart';
 import '../../../../utils/utils.dart';
 
 class SellerRegisterForm extends StatelessWidget {
-  const SellerRegisterForm({super.key});
+  const SellerRegisterForm({super.key, this.isDeskTop});
+
+  final bool? isDeskTop;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal:  ResponsiveWidget.isSmallScreen(context) ? 70 : 120),
-      height: MediaQuery.of(context).size.height,
-      child: Consumer<SellerRegisterViewModel>(builder: (context, provider, child) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              if(!ResponsiveWidget.isSmallScreen(context)) const SizedBox(height: 100,),
-              ResponsiveWidget.isSmallScreen(context)
-                  ? Container(
-                  height: 100,
-                  width: 100,
-                  margin: const EdgeInsets.only(top: 50, bottom: 50),
-                  child: const AppLogo())
-                  : const SizedBox.shrink(),
-              AnimatedSwitcher(duration: const Duration(milliseconds: 300),child: provider.isOtpScreen ? otpVerifyUI(context,provider) : phoneNumberUI(context,provider),)
-              // AnimatedCrossFade(firstChild: otpVerifyUI(context,provider), secondChild: phoneNumberUI(context,provider), crossFadeState: provider.isOtpScreen ? CrossFadeState.showFirst : CrossFadeState.showSecond, duration: const Duration(milliseconds: 50))
-            ],
-          ),
-        );
-      }),
-    );
+    return Consumer<SellerRegisterViewModel>(builder: (context, provider, child) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            AnimatedSwitcher(duration: const Duration(milliseconds: 300),child: provider.isOtpScreen ? otpVerifyUI(context,provider) : phoneNumberUI(context,provider),)
+            // AnimatedCrossFade(firstChild: otpVerifyUI(context,provider), secondChild: phoneNumberUI(context,provider), crossFadeState: provider.isOtpScreen ? CrossFadeState.showFirst : CrossFadeState.showSecond, duration: const Duration(milliseconds: 50))
+          ],
+        ),
+      );
+    });
   }
 
 

@@ -4,8 +4,11 @@ import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/features/shared/carousel_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/view/seller_register_form.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../common/styles/font_style.dart';
+import '../../../../constants/screen_size_constants.dart';
+import '../../../../route/router_constant.dart';
 import '../../../shared/star_rating.dart';
 
 class SellerRegister extends StatelessWidget {
@@ -23,6 +26,23 @@ class SellerRegister extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints){
+        if (constraints.maxWidth < ScreenSizeConstants.mobileBreakPoint) {
+          return mobileLayout(context);
+        } else if (constraints.maxWidth < ScreenSizeConstants.tabletBreakPoint) {
+          return tabletLayout(context);
+        } else if (constraints.maxWidth < ScreenSizeConstants.desktopBreakPoint) {
+          return desktopOrTvLayout(context);
+        } else {
+          return desktopOrTvLayout(context);
+        }
+      },
+    );
+  }
+
+
+  Widget mobileLayout(BuildContext context){
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.bgColor,
@@ -34,19 +54,77 @@ class SellerRegister extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-               ResponsiveWidget.isSmallScreen(context) ? const Expanded(
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 20,top: 20),
+                child: InkWell(
+                    onTap: (){
+                      context.go(AppPages.landing);
+                    },
+                    child: const Icon(Icons.close,color: AppColors.darkBorder,size: 30,)),
+              ),
+              const SizedBox(height: 20,),
+              const Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SellerRegisterForm()
+
+                      Padding(
+                        padding: EdgeInsetsDirectional.only(start: 20, end: 20, top: 20, bottom: 20),
+                        child: SellerRegisterForm(),
+                      )
                     ],
                   ),
                 ),
               )
-                  : Expanded(
-                child: renderForm(context, 100, 100, 40, 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget tabletLayout(BuildContext context){
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.bgColor,
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child:  Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if(ResponsiveWidget.isSquareOrAlmostSquare(context))
+               Expanded(
+                child: renderForm(context, 60, 60, 30, 30,true, 10, 10, false),
+              )else
+                Expanded(
+                  child: renderFormVertically(context, 60, 60, 30, 30,true, 50, 50, false),
+                )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget desktopOrTvLayout(BuildContext context){
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.bgColor,
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child:  Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+               Expanded(
+                child: renderForm(context, 100, 100, 40, 40,true, 90, 90, true),
               )
             ],
           ),
@@ -56,7 +134,39 @@ class SellerRegister extends StatelessWidget {
   }
 
 
-  Widget renderForm(BuildContext context, double startPadding, double endPadding, double topPadding, double bottomPadding){
+  Widget renderFormVertically(BuildContext context, double startPadding, double endPadding, double topPadding, double bottomPadding, bool showCarousel, double formStartPadding, double formEndPadding, bool isDesktop){
+    return Container(
+      padding: EdgeInsetsDirectional.only(start: startPadding, end: endPadding, top: topPadding, bottom: bottomPadding),
+      decoration: const BoxDecoration(
+          color: AppColors.sellerSignUpBg,
+          boxShadow: [
+            BoxShadow(color: AppColors.darkBorder)
+          ]
+      ),
+      child: Container(
+        color: AppColors.white,
+        child: Column(
+          children: [
+            if(showCarousel)Column(
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                    child: slider(context, isDesktop)),
+              ],
+            ),
+            const SizedBox(height: 10,),
+            Expanded(child: Padding(
+              padding: EdgeInsetsDirectional.only(start: formStartPadding,end: formEndPadding),
+              child: const SingleChildScrollView(child: SellerRegisterForm()),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget renderForm(BuildContext context, double startPadding, double endPadding, double topPadding, double bottomPadding, bool showCarousel, double formStartPadding, double formEndPadding, bool isDesktop){
     return Container(
       padding: EdgeInsetsDirectional.only(start: startPadding, end: endPadding, top: topPadding, bottom: bottomPadding),
       decoration: const BoxDecoration(
@@ -72,21 +182,25 @@ class SellerRegister extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
+                 Expanded(
                   flex:   1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: SellerRegisterForm())
+                      if(isDesktop)const SizedBox(height: 150,) else const SizedBox(height: 100,),
+                      Expanded(child: Padding(
+                        padding: EdgeInsetsDirectional.only(start: formStartPadding,end: formEndPadding),
+                        child: const SellerRegisterForm(),
+                      ))
                     ],
                   ),
                 ),
-                if(!ResponsiveWidget.isSmallScreen(context))Expanded(
+                if(showCarousel)Expanded(
                   flex:   1,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: slider(context),
+                  child: Column(
+                    children: [
+                      Expanded(child: slider(context, isDesktop)),
+                    ],
                   ),
                 ),
               ],),
@@ -96,7 +210,7 @@ class SellerRegister extends StatelessWidget {
     );
   }
 
-  Widget slider(BuildContext context){
+  Widget slider(BuildContext context, bool isDesktop){
 
     final List<CarouselModel> carouseModel = [
       CarouselModel(imgUrl: 'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',desc: "We move at a pace that’s unmatched, rolling out new features while others struggle with outdated systems. While they\’re busy fixing legacy issues, we\’re already implementing the next big thing.Our speed gives us the edge in an ever-evolving market.", rating: 5,designation: 'Founder, catalog',orgFeature: 'Web design agency',writerName: 'Sophie Hall'),
@@ -109,117 +223,128 @@ class SellerRegister extends StatelessWidget {
       carouselController: _controller,
       options: CarouselOptions(
         viewportFraction: 1.0,
+        aspectRatio: 1,
         autoPlay: true,
         enlargeCenterPage: false,
         enableInfiniteScroll: true,
         autoPlayInterval: const Duration(seconds: 5)
       ),
       items: carouseModel
-          .map((item) => SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            Positioned.fill(child: Image.network(item.imgUrl ?? '', fit: BoxFit.cover)),
-            Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                gradient: LinearGradient(
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.0),
-                    Colors.black.withOpacity(0.3),
-                  ],
-                  // ignore: prefer_const_literals_to_create_immutables
-                  stops: [0.0, 1.0],
+          .map((item) => Stack(
+            children: [
+              Positioned.fill(child: Image.network(item.imgUrl ?? '', fit: BoxFit.cover)),
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.0),
+                      Colors.black.withOpacity(0.3),
+                    ],
+                    // ignore: prefer_const_literals_to_create_immutables
+                    stops: [0.0, 1.0],
+                  ),
                 ),
               ),
-            ),
-            Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(item.desc ?? '', style: FontStyles.labelLarge
-                        .copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 30,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          StarRating(
-                            color: AppColors.white,
-                            onRatingChanged: (value){},
-                            rating: item.rating?.toDouble() ?? 0,
-                            starCount: 5,
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(item.writerName ?? '', style: FontStyles.labelLarge
-                              .copyWith(color: AppColors.white,fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      const SizedBox(height: 7,),
-                      Row(
-                        children: [
-                          Expanded(
+              Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: SingleChildScrollView(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(item.designation ?? '', style: FontStyles.labelMedium
-                                    .copyWith(color: AppColors.inActiveBorder)),
-                                const SizedBox(height: 5,),
-                                Text(item.orgFeature ?? '', style: FontStyles.labelSmall
-                                    .copyWith(color: AppColors.inActiveBorder,fontSize: 10)),
+                                Text(item.desc ?? '', style: isDesktop?  FontStyles.labelLarge
+                                    .copyWith(color: AppColors.white, fontWeight: FontWeight.bold) : FontStyles.labelMedium
+                                    .copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 30,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    StarRating(
+                                      color: AppColors.white,
+                                      onRatingChanged: (value){},
+                                      rating: item.rating?.toDouble() ?? 0,
+                                      starCount: 5,
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(item.writerName ?? '', style: isDesktop? FontStyles.labelLarge
+                                        .copyWith(color: AppColors.white,fontWeight: FontWeight.bold) : FontStyles.labelMedium
+                                        .copyWith(color: AppColors.white,fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                const SizedBox(height: 7,),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(item.designation ?? '', style: isDesktop? FontStyles.labelMedium
+                                              .copyWith(color: AppColors.inActiveBorder) : FontStyles.labelSmall
+                                              .copyWith(color: AppColors.inActiveBorder)),
+                                          const SizedBox(height: 5,),
+                                          Text(item.orgFeature ?? '', style: isDesktop? FontStyles.labelSmall
+                                              .copyWith(color: AppColors.inActiveBorder,fontSize: 10) : FontStyles.labelVerySmall
+                                              .copyWith(color: AppColors.inActiveBorder,fontSize: 10)),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => _controller.previousPage(),
+                                          style:  ButtonStyle(
+                                              shape: WidgetStateProperty.all(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(70.0),
+                                                ),
+                                              ),
+                                              surfaceTintColor: WidgetStateProperty.all(
+                                                  AppColors.focusedBorder
+                                              )),
+                                          child: const Text('←', style: TextStyle(color: AppColors.darkBorder)),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        ElevatedButton(
+                                          onPressed: () => _controller.nextPage(),
+                                          style: ButtonStyle(
+                                            shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(100.0),
+                                              ),
+                                            ),
+                                            surfaceTintColor: WidgetStateProperty.all(
+                                                AppColors.focusedBorder
+                                            ),
+                                          ),
+                                          child: const Text('→', style: TextStyle(color: AppColors.darkBorder),),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 30,),
                               ],
                             ),
                           ),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () => _controller.previousPage(),
-                                style:  ButtonStyle(
-                                    shape: WidgetStateProperty.all(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(70.0),
-                                      ),
-                                    ),
-                                surfaceTintColor: WidgetStateProperty.all(
-                                  AppColors.focusedBorder
-                                )),
-                                child: const Text('←', style: TextStyle(color: AppColors.darkBorder)),
-                              ),
-                              const SizedBox(width: 10,),
-                              ElevatedButton(
-                                onPressed: () => _controller.nextPage(),
-                                style: ButtonStyle(
-                                    shape: WidgetStateProperty.all(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
-                                    ),
-                                    surfaceTintColor: WidgetStateProperty.all(
-                                        AppColors.focusedBorder
-                                    ),
-                                ),
-                                child: const Text('→', style: TextStyle(color: AppColors.darkBorder),),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 30,),
-                    ],
-                  ),
-                )),
-          ],
-        ),
-      ))
+                        )
+
+                      ],
+                    ),
+                  )),
+            ],
+          ))
           .toList(),
     );
   }

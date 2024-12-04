@@ -92,4 +92,10 @@ class FontStyles {
       fontSize: 12,
       letterSpacing: 0.5,
       fontWeight: FontWeight.w500);
+  static const TextStyle labelVerySmall = TextStyle(
+      fontFamily: 'Sans',
+      color: AppColors.primaryTextColor,
+      fontSize: 10,
+      letterSpacing: 0.5,
+      fontWeight: FontWeight.w500);
 }
