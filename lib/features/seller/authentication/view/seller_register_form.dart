@@ -1,156 +1,198 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/common/styles/font_style.dart';
 import 'package:frontend_ecommerce/common/widget/app_logo.dart';
 import 'package:frontend_ecommerce/common/widget/shared/custom_button.dart';
-import 'package:frontend_ecommerce/common/widget/shared/input_text_field.dart';
 import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/constants/dimen_constant.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/view_model/seller_register_view_model.dart';
 import 'package:frontend_ecommerce/utils/responsive_layout.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../common/widget/shared/input_phone_number_field.dart';
+import '../../../../route/router_constant.dart';
+import '../../../../utils/otp_input_field.dart';
+import '../../../../utils/timer_provider.dart';
+import '../../../../utils/utils.dart';
+
 class SellerRegisterForm extends StatelessWidget {
-  SellerRegisterForm({super.key});
+  const SellerRegisterForm({super.key, this.isDeskTop = false, this.showBackText = false, this.showBackIcon = false});
+
+  final bool? isDeskTop;
+  final bool? showBackText;
+  final bool? showBackIcon;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: ResponsiveWidget.isSmallScreen(context) ? 20 : 60),
-      child: Consumer<SellerRegisterViewModel>(builder: (context, provider, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Consumer<SellerRegisterViewModel>(builder: (context, provider, child) {
+      return SingleChildScrollView(
+        child: Column(
           children: [
-            ResponsiveWidget.isSmallScreen(context)
-                ? Container(
-                height: 100,
-                width: 100,
-                margin: const EdgeInsets.only(top: 50, bottom: 50),
-                child: const AppLogo())
-                : const SizedBox.shrink(),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context).create_seller_account,
-                    style: FontStyles.displaySmall
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
+            AnimatedSwitcher(duration: const Duration(milliseconds: 300),child: provider.isOtpScreen ? otpVerifyUI(context,provider) : phoneNumberUI(context,provider),)
+            // AnimatedCrossFade(firstChild: otpVerifyUI(context,provider), secondChild: phoneNumberUI(context,provider), crossFadeState: provider.isOtpScreen ? CrossFadeState.showFirst : CrossFadeState.showSecond, duration: const Duration(milliseconds: 50))
+          ],
+        ),
+      );
+    });
+  }
+
+
+  Widget phoneNumberUI(BuildContext context,SellerRegisterViewModel provider){
+    return Column(
+      children: [
+        if(showBackIcon ?? false)Align(
+          alignment: Alignment.topLeft,
+          child: InkWell(
+              onTap: (){
+                context.go(AppPages.landing);
+              },
+              child: const Icon(Icons.close,color: AppColors.darkBorder,size: 30,)),
+        ),
+        if(showBackIcon ?? false)const SizedBox(height: 20,),
+        Text(
+          AppLocalizations.of(context).welcome,
+          style: FontStyles.displayLarge
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 5,),
+        Text(
+          AppLocalizations.of(context).please_enter_your_phone_number,
+          style: FontStyles.labelSmall
+              .copyWith(fontWeight: FontWeight.w300),
+        ),
+        SizedBox(
+          height: DimenConstant.titleContentSpace,
+        ),
+        Column(
+          children: [
+            InputPhoneNumberField<SellerRegisterViewModel>(
+              initialDialCode: provider.initialDialCode,
+              phoneNumberController: provider.phoneNumberController,
+              onDialCodeChanged: (value)=> provider.onDialCodeChanged(value),
+              onPhoneNumberChanged: (value)=> provider.onPhoneNumberChanged(value),
             ),
             SizedBox(
-              height: DimenConstant.titleContentSpace,
+              height: DimenConstant.bigContentSpacing,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  right: ResponsiveWidget.isSmallScreen(context)
-                      ? 0
-                      : MediaQuery.of(context).size.width / 8),
-              child: Column(
-                children: [
-                  InputTextField(
-                    formKey: provider.firstNameFormKey,
-                    controller: provider.firstNameController,
-                    errorText: provider.firstNameErrorText,
-                    hintText: AppLocalizations.of(context).enter_first_name,
-                    labelText: AppLocalizations.of(context).first_name,
-                    onTextChange: (value) {
-                      // provider.validateEmail(context, value);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.lastNameFormKey,
-                    controller: provider.lastNameController,
-                    errorText: provider.lastNameErrorText,
-                    hintText: AppLocalizations.of(context).enter_last_name,
-                    labelText: AppLocalizations.of(context).last_name,
-                    onTextChange: (value) {
-                      // provider.validateEmail(context, value);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.phoneNumberFormKey,
-                    controller: provider.phoneNumberController,
-                    errorText: provider.phoneNumberErrorText,
-                    hintText: AppLocalizations.of(context).enter_phone_number,
-                    labelText: AppLocalizations.of(context).phone_number,
-                    onTextChange: (value) {
-                      // provider.validateEmail(context, value);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.emailFormKey,
-                    controller: provider.emailController,
-                    errorText: provider.emailErrorText,
-                    hintText: AppLocalizations.of(context).enter_email,
-                    labelText: AppLocalizations.of(context).email,
-                    onTextChange: (value) {
-                      // provider.validateEmail(context, value);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.passwordFormKey,
-                    controller: provider.passwordController,
-                    errorText: provider.passwordErrorText,
-                    isObscureText: true,
-                    hintText: AppLocalizations.of(context).enter_password,
-                    labelText: AppLocalizations.of(context).password,
-                    onTextChange: (value) {
-                      // provider.validatePassword(context, value, true);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  InputTextField(
-                    formKey: provider.confirmPasswordFormKey,
-                    controller: provider.confirmPasswordController,
-                    errorText: provider.confirmPasswordErrorText,
-                    isObscureText: true,
-                    hintText:
-                    AppLocalizations.of(context).enter_confirm_password,
-                    labelText: AppLocalizations.of(context).confirm_password,
-                    onTextChange: (value) {
-                      // provider.validatePassword(context, value, false,
-                      //     password: provider.passwordController.text);
-                    },
-                  ),
-                  SizedBox(
-                    height: DimenConstant.inputContentSpacing,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
+            Consumer<TimerProvider>(
+                builder: (ctx, timerProvider, child){
+                  return SizedBox(
+                    width: MediaQuery.of(ctx).size.width,
                     child: CustomButton(
-                        buttonText: AppLocalizations.of(context).create_account,
+                        buttonText: AppLocalizations.of(ctx).register_with_otp,
                         onPressed: () {
-                          // provider.buyerRegisterCall(context);
+                          timerProvider.startTimer(59);
+                          provider.sellerRegisterCall(ctx);
                         },
-                        backgroundColor: AppColors.primaryColor,
+                        isLoading: provider.registerLoading,
+                        loadingColor: AppColors.white,
+                        backgroundColor: provider.phoneNumberController.text.isNotEmpty?  AppColors.primaryColor : AppColors.greyButtonBg,
                         textStyle: FontStyles.labelMedium
                             .copyWith(color: AppColors.white)),
-                  ),
-                  const SizedBox(height: 20,),
-                ],
-              ),
-            )
+                  );
+            }),
+            const SizedBox(height: 20,),
           ],
-        );
-      }),
+        )
+      ],
     );
   }
+
+  Widget otpVerifyUI(BuildContext context,SellerRegisterViewModel provider){
+    return Column(
+      children: [
+        if(!(showBackText ?? false))Row(
+          children: [
+            InkWell(
+                onTap: (){
+                  provider.toggleOtpScreen(false);
+                },
+                child: const Icon(Icons.arrow_back_outlined,color: AppColors.darkBorder,size: 30,)),
+            const SizedBox(width: 20,),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context).verify_otp,
+                style: FontStyles.displaySmall
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: DimenConstant.titleContentSpace,
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              child: OTPInputField(
+                length: 6,
+                onCompleted: (value) {
+                  provider.onOtpChanged(value);
+                },
+              ),
+            ),
+            SizedBox(
+              height: DimenConstant.bigContentSpacing,
+            ),
+
+            Consumer<TimerProvider>(builder: (ctx, timerProvider, child){
+              if(timerProvider.secondsRemaining <=0){
+                return RichText(
+                  text: TextSpan(
+                    text: '${AppLocalizations.of(context).not_receive_otp} ',
+                    style: const TextStyle(fontSize: 14),
+                    children: [
+                      TextSpan(text: AppLocalizations.of(context).send_again,recognizer: TapGestureRecognizer()..onTap = () {
+                        timerProvider.startTimer(59);
+                        provider.generateOtp(ctx, provider.getPhoneNumber());
+                      } , style: const TextStyle(color: AppColors.primaryColor,decoration: TextDecoration.underline,fontSize: 14))
+                    ]
+                  ),
+                );
+              }else{
+                return Text('${AppLocalizations.of(context).resend_otp_in} ${timerProvider.secondsRemaining} s',style: const TextStyle(fontSize: 14),);
+              }
+            }),
+
+            SizedBox(
+              height: DimenConstant.contentSpacing,
+            ),
+
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: CustomButton(
+                  buttonText: AppLocalizations.of(context).verify,
+                  onPressed: () {
+                    provider.verifyOtp(context);
+                  },
+                  isLoading: provider.verifyOtpLoading,
+                  loadingColor: AppColors.white,
+                  backgroundColor: provider.otp.length >=6?  AppColors.primaryColor : AppColors.greyButtonBg,
+                  textStyle: FontStyles.labelMedium
+                      .copyWith(color: AppColors.white)),
+            ),
+            const SizedBox(height: 20,),
+            if(showBackText ?? false)InkWell(
+              onTap: (){
+                provider.toggleOtpScreen(false);
+              },
+              child: Container(
+                  decoration: BoxDecoration(color: AppColors.darkBorder,
+                  borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsetsDirectional.only(start: 20,end: 20, top: 5, bottom: 5),
+                  child:  Text(AppLocalizations.of(context).back_button_text, style: const TextStyle(color: AppColors.white,fontWeight: FontWeight.bold,))),
+            ),
+            if(showBackText ?? false)
+              const SizedBox(height: 20,),
+          ],
+        )
+      ],
+    );
+  }
+
+
 }
