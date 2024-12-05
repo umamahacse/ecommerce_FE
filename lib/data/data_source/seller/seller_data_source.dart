@@ -22,34 +22,42 @@ class SellerDataSourceImpl implements BuyerDataSource{
 
   @override
   Future<SellerRegisterResponseModel>? sellerRegister(BuildContext context, SellerRegisterRequestModel data) async{
-    final apiService = ApiService(context);
-    ErrorResponseModel? errorResponseModel;
-    SellerRegisterModel? buyerRegisterModel;
+    try{
+      final apiService = ApiService(context);
+      ErrorResponseModel? errorResponseModel;
+      SellerRegisterModel? buyerRegisterModel;
 
-    Response response = await apiService.post(SellerApiEndpoints.sellerRegister, data);
-    if(response.statusCode == 200){
-      buyerRegisterModel = SellerRegisterModel.fromJson(response.data);
-    } else{
-      errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      Response response = await apiService.post(SellerApiEndpoints.sellerRegister, data);
+      if(response.statusCode == 200){
+        buyerRegisterModel = SellerRegisterModel.fromJson(response.data);
+      } else{
+        errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      }
+
+      return SellerRegisterResponseModel(sellerRegisterModel: buyerRegisterModel, errorResponseModel: errorResponseModel);
+    }catch(e){
+      rethrow;
     }
-
-    return SellerRegisterResponseModel(sellerRegisterModel: buyerRegisterModel, errorResponseModel: errorResponseModel);
   }
 
   @override
   Future<SellerOTPResponseModel>? generateOtp(BuildContext context, SellerOTPRequestModel data) async{
-    final apiService = ApiService(context);
-    ErrorResponseModel? errorResponseModel;
-    SellerOTPRegisterModel? sellerOTPRegisterModel;
+    try{
+      final apiService = ApiService(context);
+      ErrorResponseModel? errorResponseModel;
+      SellerOTPRegisterModel? sellerOTPRegisterModel;
 
-    Response response = await apiService.post(SellerApiEndpoints.sellerGenerateOTP, data);
-    if(response.statusCode == 200){
-      sellerOTPRegisterModel = SellerOTPRegisterModel.fromJson(response.data);
-    } else{
-      errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      Response response = await apiService.post(SellerApiEndpoints.sellerGenerateOTP, data);
+      if(response.statusCode == 200){
+        sellerOTPRegisterModel = SellerOTPRegisterModel.fromJson(response.data);
+      } else{
+        errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      }
+
+      return SellerOTPResponseModel(sellerOTPRegisterModel: sellerOTPRegisterModel, errorResponseModel: errorResponseModel);
+    }catch(e){
+      rethrow;
     }
-
-    return SellerOTPResponseModel(sellerOTPRegisterModel: sellerOTPRegisterModel, errorResponseModel: errorResponseModel);
   }
 
   @override

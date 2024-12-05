@@ -185,23 +185,33 @@ class SellerRegisterViewModel extends ChangeNotifier{
           email: emailController.text,
           password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: (getPhoneNumber()));
 
-      await sellerDataSource.sellerRegister(context,requestModel)?.then((response) async{
-        if (response.sellerRegisterModel != null) {
-          if (response.sellerRegisterModel?.status == 200) {
-            generateOtp(context,response.sellerRegisterModel?.data?.phoneNumber ?? '');
-          }else{
+      try{
+        await sellerDataSource.sellerRegister(context,requestModel)?.then((response) async{
+          if (response.sellerRegisterModel != null) {
+            if (response.sellerRegisterModel?.status == 200) {
+              generateOtp(context,response.sellerRegisterModel?.data?.phoneNumber ?? '');
+            }else{
+              registerLoading = false;
+              notifyListeners();
+              CustomSnackbar(
+                  message: response.errorResponseModel!.message ?? "",
+                  context: context)
+                  .showSnackbar();
+            }
+          } else {
+            registerLoading = false;
+            notifyListeners();
             CustomSnackbar(
                 message: response.errorResponseModel!.message ?? "",
                 context: context)
                 .showSnackbar();
           }
-        } else {
-          CustomSnackbar(
-              message: response.errorResponseModel!.message ?? "",
-              context: context)
-              .showSnackbar();
-        }
-      });
+        });
+      }on DioException  catch (e){
+        registerLoading = false;
+        notifyListeners();
+        showApiExceptionError(e, context);
+      }
     } else {
       if(phoneNumber.isNotEmpty){
         if(!phoneNumberValidated){
@@ -252,10 +262,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
     }on DioException catch (e) {
       registerLoading = false;
       notifyListeners();
-      CustomSnackbar(
-          message: e.response?.data['message'],
-          context: context)
-          .showSnackbar();
+      showApiExceptionError(e, context);
     }
   }
 
@@ -296,13 +303,8 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }on DioException catch (e) {
         verifyOtpLoading = false;
         notifyListeners();
-        CustomSnackbar(
-            message: e.response?.data['message'],
-            context: context)
-            .showSnackbar();
+        showApiExceptionError(e, context);
       }
-
-
     }else{
       CustomSnackbar(
           message: 'Please enter OTP',
@@ -322,6 +324,14 @@ class SellerRegisterViewModel extends ChangeNotifier{
   void toggleOtpScreen(bool? openVerifyOtpScreen){
     isOtpScreen = openVerifyOtpScreen ?? false;
     notifyListeners();
+  }
+
+
+  void showApiExceptionError(dynamic error, BuildContext context){
+    CustomSnackbar(
+        message: error.response?.data != null ? (error.response?.data is Map<String, dynamic> && (error.response?.data as Map<String,dynamic>).containsKey('message') ?  error.response?.data['message']  : 'Something went wrong') : 'Something went wrong',
+        context: context)
+        .showSnackbar();
   }
 
 
