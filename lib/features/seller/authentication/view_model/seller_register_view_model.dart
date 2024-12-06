@@ -267,7 +267,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
   }
 
 
-  verifyOtp(context) async{
+  verifyOtp(BuildContext context) async{
     if(otp.length >= 6){
       verifyOtpLoading = true;
       notifyListeners();
@@ -280,11 +280,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
             verifyOtpLoading = false;
             notifyListeners();
             if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
-              // Move to Home page
-              CustomSnackbar(
-                  message: 'OTP Verified',
-                  context: context)
-                  .showSnackbar();
+              context.go(AppPages.auth+AppPages.sellerCreateContract);
             }else{
               CustomSnackbar(
                   message: onValue.errorResponseModel!.message ?? "",

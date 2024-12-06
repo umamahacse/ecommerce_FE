@@ -28,4 +28,5 @@ class AppColors{
   static const Color sellerSignUpBg = Color(0xffe6e7ea);
   static const Color sellerButtonBg = Color(0xff101522);
   static const Color greyButtonBg = Color(0xff949698);
+  static const Color stepperInactiveBorder = Color(0xffdcdce5);
 }

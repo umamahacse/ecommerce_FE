@@ -3,6 +3,7 @@ import 'package:frontend_ecommerce/features/buyer/authentication/view/buyer_logi
 import 'package:frontend_ecommerce/features/buyer/authentication/view/buyer_register.dart';
 import 'package:frontend_ecommerce/features/buyer/dashboard/view/buyer_dashboard.dart';
 import 'package:frontend_ecommerce/features/buyer/landing/view/landing_screen.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/view/create_contract_screen.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/view/seller_register.dart';
 import 'package:frontend_ecommerce/route/router_constant.dart';
 import 'package:go_router/go_router.dart';
@@ -38,6 +39,12 @@ class AppRouter {
           path: AppPages.auth+AppPages.sellerRegister,
           builder: (BuildContext context, GoRouterState state) {
             return SellerRegister();
+          }
+      ),
+      GoRoute(
+          path: AppPages.auth+AppPages.sellerCreateContract,
+          builder: (BuildContext context, GoRouterState state) {
+            return CreateContractScreen();
           }
       ),
     ],
