@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_ecommerce/common/styles/font_style.dart';
 
 import '../../constants/color_constants.dart';
 import 'model/stepper_data.dart';
@@ -38,12 +39,18 @@ class CustomStepper extends StatelessWidget {
                       splashColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       onTap: (){
-                        onChanged?.call(i);
+                        if(i == 0){
+                          onChanged?.call(i);
+                        }else{
+                          if(data?[i -1].stepCompleted ?? false){
+                            onChanged?.call(i);
+                          }
+                        }
                       },
                       child: Column(children: [
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: 20,end: 20),
-                          child: Text(data?[i].headerTitle ?? '', style: TextStyle(color: data?[i].isCurrentStep ?? false ? AppColors.primaryColor : AppColors.secondaryTextColor),),
+                          child: Text(data?[i].headerTitle ?? '', style: FontStyles.labelMedium.copyWith(fontWeight: FontWeight.w400,color: data?[i].isCurrentStep ?? false ? AppColors.primaryColor : AppColors.defaultTextColor)),
                         ),
                         const SizedBox(height: 10,),
                         Stack(
