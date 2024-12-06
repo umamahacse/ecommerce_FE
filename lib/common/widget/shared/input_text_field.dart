@@ -16,6 +16,10 @@ class InputTextField extends StatefulWidget {
   final FormFieldValidator<String>? onVaildate;
   final Function(String)? onTextChange;
   final List<TextInputFormatter>? inputFormatters;
+  final Color cursorColor;
+  final Color focusedBorderColor;
+  final Color textColor;
+  final Color inactiveBorderColor;
 
   const InputTextField(
       {super.key,
@@ -30,7 +34,11 @@ class InputTextField extends StatefulWidget {
       this.onTextChange,
       this.errorText,
       this.onVaildate,
-      this.inputFormatters});
+      this.inputFormatters,
+      this.cursorColor = AppColors.focusedBorder,
+      this.focusedBorderColor = AppColors.focusedBorder,
+      this.inactiveBorderColor = AppColors.inActiveBorder,
+      this.textColor = AppColors.primaryTextColor});
 
   @override
   State<InputTextField> createState() => _InputTextFieldState();
@@ -65,6 +73,8 @@ class _InputTextFieldState extends State<InputTextField> {
           TextFormField(
             key: widget.formKey,
             controller: widget.controller,
+            cursorColor: widget.cursorColor,
+            style: FontStyles.labelMedium.copyWith(color: widget.textColor),
             obscureText: widget.isObscureText ? obscureText : false,
             decoration: InputDecoration(
               labelText: widget.labelText,
@@ -87,8 +97,8 @@ class _InputTextFieldState extends State<InputTextField> {
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: _isHovered
-                      ? AppColors.focusedBorder // Hover border color
-                      : AppColors.inActiveBorder, // Default border color
+                      ? widget.focusedBorderColor // Hover border color
+                      : widget.inactiveBorderColor, // Default border color
                 ),
               ),
               focusedBorder: OutlineInputBorder(
@@ -96,12 +106,12 @@ class _InputTextFieldState extends State<InputTextField> {
                   color:
                       (widget.errorText != null && widget.errorText!.isNotEmpty)
                           ? Colors.red
-                          : AppColors.focusedBorder, // Active border color
+                          : widget.focusedBorderColor, // Active border color
                 ),
               ),
-              disabledBorder: const OutlineInputBorder(
+              disabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.inActiveBorder, // Disabled border color
+                  color: widget.inactiveBorderColor, // Disabled border color
                 ),
               ),
               focusedErrorBorder: const OutlineInputBorder(

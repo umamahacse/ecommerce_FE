@@ -47,5 +47,10 @@
     "not_receive_otp" : "OTP not received?",
       "send_again" : "Send again",
       "resend_otp_in" : "Resend OTP in",
-      "back_button_text": "Back"
+      "back_button_text": "Back",
+      "next_button_text" : "Next",
+      "add_general_information" : "Add General Information",
+      "fill_out_the_basic_details_for_this_contract" : "Fill out the basic details for this contract",
+        "fill_out_the_basic_details_for_this_contract" : "Fill out the basic details for this contract",
+        "optional" : "optional"
 }

@@ -40,10 +40,14 @@ class CustomStepper extends StatelessWidget {
                       hoverColor: Colors.transparent,
                       onTap: (){
                         if(i == 0){
-                          onChanged?.call(i);
+                          if(data?[i].isCurrentStep == false){
+                            onChanged?.call(i);
+                          }
                         }else{
                           if(data?[i -1].stepCompleted ?? false){
-                            onChanged?.call(i);
+                            if(data?[i].isCurrentStep == false){
+                              onChanged?.call(i);
+                            }
                           }
                         }
                       },

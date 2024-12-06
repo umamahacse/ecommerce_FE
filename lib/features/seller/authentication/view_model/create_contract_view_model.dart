@@ -8,6 +8,21 @@ class CreateContractViewModel extends ChangeNotifier{
 
   final int? steps = 5;
   final List<StepperData> stepperData = [];
+  final GlobalKey<FormState> firstNameFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> lastNameFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> confirmPasswordFormKey = GlobalKey<FormState>();
+  TextEditingController firstNameController = TextEditingController(text: "");
+  TextEditingController lastNameController = TextEditingController(text: "");
+  TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController passwordController = TextEditingController(text: "");
+  TextEditingController confirmPasswordController = TextEditingController(text: "");
+  String? firstNameErrorText;
+  String? lastNameErrorText;
+  String? emailErrorText;
+  String? passwordErrorText;
+  String? confirmPasswordErrorText;
 
   setInitialStepperData(){
     stepperData.add(StepperData(headerTitle: 'Personal Information',isCurrentStep: false, stepCompleted: true));
@@ -39,6 +54,14 @@ class CreateContractViewModel extends ChangeNotifier{
     }
     stepperData[index].isCurrentStep = true;
     notifyListeners();
+  }
+
+
+  bool checkBasicDetails(){
+
+    // TODO:
+    // logic to check all the fields is yet to be implemented.
+    return false;
   }
 
 
