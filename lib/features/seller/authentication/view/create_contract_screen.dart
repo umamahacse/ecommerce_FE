@@ -241,7 +241,7 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
         const SizedBox(height: 10,),
         Center(child: Text(AppLocalizations.of(context).fill_out_the_basic_details_for_this_contract, style: FontStyles.labelSmall.copyWith(color: AppColors.defaultTextColor),)),
         const SizedBox(height: 20,),
-        Text(AppLocalizations.of(context).first_name, style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+        Text('${AppLocalizations.of(context).first_name} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
         const SizedBox(height: 10,),
         InputTextField(
           formKey: provider.firstNameFormKey,
@@ -254,10 +254,12 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
           focusedBorderColor: AppColors.sellerTextFieldBorder,
           inactiveBorderColor: AppColors.sellerTextFieldBorder,
           onTextChange: (value) {
-            // provider.validateEmail(context, value);
+            provider.validateName(context, value, true);
           },
         ),
-        Text(AppLocalizations.of(context).last_name, style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+        if(provider.firstNameErrorText?.isNotEmpty ?? false)
+        const SizedBox(height: 10,),
+        Text('${AppLocalizations.of(context).last_name} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
         const SizedBox(height: 10,),
         InputTextField(
           formKey: provider.lastNameFormKey,
@@ -270,10 +272,12 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
           focusedBorderColor: AppColors.sellerTextFieldBorder,
           inactiveBorderColor: AppColors.sellerTextFieldBorder,
           onTextChange: (value) {
-            // provider.validateEmail(context, value);
+            provider.validateName(context, value, false);
           },
         ),
-        Text('${AppLocalizations.of(context).email} (${AppLocalizations.of(context).optional})', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+        if(provider.lastNameErrorText?.isNotEmpty ?? false)
+        const SizedBox(height: 10,),
+        Text('${AppLocalizations.of(context).email} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
         const SizedBox(height: 10,),
         InputTextField(
           formKey: provider.emailFormKey,
@@ -286,10 +290,12 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
           focusedBorderColor: AppColors.sellerTextFieldBorder,
           inactiveBorderColor: AppColors.sellerTextFieldBorder,
           onTextChange: (value) {
-            // provider.validateEmail(context, value);
+            provider.validateEmail(context, value);
           },
         ),
-        Text(AppLocalizations.of(context).password, style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+        if(provider.emailErrorText?.isNotEmpty ?? false)
+        const SizedBox(height: 10,),
+        Text('${AppLocalizations.of(context).password} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
         const SizedBox(height: 10,),
         InputTextField(
           formKey: provider.passwordFormKey,
@@ -297,15 +303,21 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
           errorText: provider.passwordErrorText,
           hintText: '',
           labelText: '',
+          isObscureText: true,
           cursorColor: AppColors.sellerTextFieldTextColor,
           textColor: AppColors.sellerTextFieldTextColor,
           focusedBorderColor: AppColors.sellerTextFieldBorder,
           inactiveBorderColor: AppColors.sellerTextFieldBorder,
           onTextChange: (value) {
-            // provider.validateEmail(context, value);
+            provider.validatePassword(context, value, true);
+            if(provider.confirmPasswordController.text.isNotEmpty){
+              provider.validatePassword(context, provider.confirmPasswordController.text, false, password: value);
+            }
           },
         ),
-        Text(AppLocalizations.of(context).confirm_password, style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+        if(provider.passwordErrorText?.isNotEmpty ?? false)
+        const SizedBox(height: 10,),
+        Text('${AppLocalizations.of(context).confirm_password} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
         const SizedBox(height: 10,),
         InputTextField(
           formKey: provider.confirmPasswordFormKey,
@@ -313,12 +325,13 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
           errorText: provider.confirmPasswordErrorText,
           hintText: '',
           labelText: '',
+          isObscureText: true,
           cursorColor: AppColors.sellerTextFieldTextColor,
           textColor: AppColors.sellerTextFieldTextColor,
           focusedBorderColor: AppColors.sellerTextFieldBorder,
           inactiveBorderColor: AppColors.sellerTextFieldBorder,
           onTextChange: (value) {
-            // provider.validateEmail(context, value);
+            provider.validatePassword(context, value, false, password: provider.passwordController.text);
           },
         ),
       ],
@@ -352,11 +365,18 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
       child: CustomButton(
           buttonText: AppLocalizations.of(context).next_button_text,
           onPressed: () {
-            provider.goToNextStep(currentIndex);
+            if(currentIndex == 0){
+              if(provider.checkBasicDetails(context)){
+                provider.setStepCompleted(currentIndex, true);
+                provider.goToNextStep(currentIndex);
+              }
+            }else if(currentIndex == 1){
+              // For index 1
+            }
           },
           isLoading: isLoading,
           loadingColor: AppColors.white,
-          backgroundColor: provider.checkBasicDetails()?  AppColors.primaryColor : AppColors.greyButtonBg,
+          backgroundColor: provider.checkBasicDetails(context)?  AppColors.primaryColor : AppColors.greyButtonBg,
           textStyle: FontStyles.labelMedium
               .copyWith(color: AppColors.white)),
     );

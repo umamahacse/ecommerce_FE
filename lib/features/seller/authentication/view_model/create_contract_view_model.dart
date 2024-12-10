@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../utils/validators/pattern_validator.dart';
 import '../../../shared/model/stepper_data.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateContractViewModel extends ChangeNotifier{
 
@@ -25,12 +27,78 @@ class CreateContractViewModel extends ChangeNotifier{
   String? confirmPasswordErrorText;
 
   setInitialStepperData(){
-    stepperData.add(StepperData(headerTitle: 'Personal Information',isCurrentStep: false, stepCompleted: true));
-    stepperData.add(StepperData(headerTitle: 'GST Verification',isCurrentStep: true, stepCompleted: false));
+    stepperData.clear();
+    stepperData.add(StepperData(headerTitle: 'Personal Information',isCurrentStep: true, stepCompleted: false));
+    stepperData.add(StepperData(headerTitle: 'GST Verification',isCurrentStep: false, stepCompleted: false));
     stepperData.add(StepperData(headerTitle: 'Store Details',isCurrentStep: false, stepCompleted: false));
     stepperData.add(StepperData(headerTitle: 'Tax and Account Information',isCurrentStep: false, stepCompleted: false));
     stepperData.add(StepperData(headerTitle: 'Shipping Information',isCurrentStep: false, stepCompleted: false));
     notifyListeners();
+  }
+
+
+  T validateEmail<T>(context, String? value) {
+    emailErrorText = PatternValidator.isValidEmail(
+        context,
+        value,
+        AppLocalizations.of(context).email_mandatory,
+        AppLocalizations.of(context).invalid_email);
+    if(T == dynamic){
+      notifyListeners();
+    }
+    return (emailErrorText?.isEmpty?? true) as T;
+  }
+
+ T validateName<T>(context, String? value, bool isFirstName) {
+    if (isFirstName) {
+      firstNameErrorText = PatternValidator.isValidName(
+          context,
+          value,
+          AppLocalizations.of(context).first_name_mandatory,
+          AppLocalizations.of(context).invalid_first_name);
+      if(T == dynamic){
+        notifyListeners();
+      }
+      return (firstNameErrorText?.isEmpty ?? true) as T;
+    } else {
+      lastNameErrorText = PatternValidator.isValidName(
+          context,
+          value,
+          AppLocalizations.of(context).last_name_mandatory,
+          AppLocalizations.of(context).invalid_last_name);
+      if(T == dynamic){
+        notifyListeners();
+      }
+      return (lastNameErrorText?.isEmpty ?? true) as T;
+    }
+  }
+
+ T validatePassword<T>(context, String? value, bool isPassword,
+      {String password = ""}) {
+    if (isPassword) {
+      passwordErrorText = PatternValidator.isValidPassword(
+          context,
+          value,
+          AppLocalizations.of(context).password_mandatory,
+          AppLocalizations.of(context).invalid_password);
+      if(T == dynamic){
+        notifyListeners();
+      }
+      return (passwordErrorText?.isEmpty ?? true) as T;
+    } else {
+      confirmPasswordErrorText = PatternValidator.isValidPassword(
+          context,
+          value,
+          AppLocalizations.of(context).confirm_password_mandatory,
+          AppLocalizations.of(context).invalid_password,
+          confirmPassword: password,
+          misMatchErrorText:
+          AppLocalizations.of(context).password_confrim_password_match);
+      if(T == dynamic){
+        notifyListeners();
+      }
+      return (confirmPasswordErrorText?.isEmpty ?? true) as T;
+    }
   }
 
 
@@ -57,10 +125,16 @@ class CreateContractViewModel extends ChangeNotifier{
   }
 
 
-  bool checkBasicDetails(){
+  bool checkBasicDetails(context){
+    if(emailController.text.isEmpty || firstNameController.text.isEmpty || lastNameController.text.isEmpty || passwordController.text.isEmpty || confirmPasswordController.text.isEmpty){
+      return false;
+    }
 
-    // TODO:
-    // logic to check all the fields is yet to be implemented.
+    if(validateEmail<bool>(context, emailController.text) && validateName(context, firstNameController.text, true) && validateName(context, lastNameController.text, false) && validatePassword(context, passwordController.text, true) && validatePassword(context, confirmPasswordController.text, false, password: passwordController.text)){
+
+      return true;
+    }
+
     return false;
   }
 

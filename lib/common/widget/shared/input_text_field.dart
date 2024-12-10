@@ -85,18 +85,23 @@ class _InputTextFieldState extends State<InputTextField> {
               errorText: null,
               suffixIcon: widget.isObscureText
                     ? InkWell(
+                splashColor: Colors.transparent,
+                      canRequestFocus: false,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
                       onTap: () => changeVisiblity(),
                       child: Container(
                         padding: const EdgeInsets.only(right: 20),
                         child: isPasswordVisible
-                        ? const Icon(Icons.visibility)
-                        : const Icon(Icons.visibility_off),
+                        ? Icon(Icons.visibility,color: widget.textColor,)
+                        : Icon(Icons.visibility_off,color: widget.textColor),
                       ),
                     )
                   : const SizedBox.shrink(),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: _isHovered
+                  color: (widget.errorText != null && widget.errorText!.isNotEmpty)? Colors.red : _isHovered
                       ? widget.focusedBorderColor // Hover border color
                       : widget.inactiveBorderColor, // Default border color
                 ),
