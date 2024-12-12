@@ -434,6 +434,7 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
                 }else{
                   provider.validPanNumber<bool>(context, provider.panNoTextField.text);
                 }
+                provider.notifyListener();
               })
             ],
           );
