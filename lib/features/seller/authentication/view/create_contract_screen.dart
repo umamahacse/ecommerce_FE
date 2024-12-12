@@ -339,8 +339,106 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
   }
 
   Widget buildGSTInfo(CreateContractViewModel provider){
-    return Column(
-      children: [],
+    return ValueListenableBuilder<int>(
+      valueListenable: provider.rxSellGstProducts,
+      builder: (context, value, child) {
+        if(value == 1){
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(child: Text(AppLocalizations.of(context).add_gst_information, style: FontStyles.labelMedium.copyWith(fontWeight: FontWeight.bold, color: AppColors.primaryTextColor),)),
+              const SizedBox(height: 10,),
+              Center(child: Text(AppLocalizations.of(context).gst_number_mandatory_text, style: FontStyles.labelSmall.copyWith(color: AppColors.defaultTextColor),)),
+              const SizedBox(height: 20,),
+              Text('${AppLocalizations.of(context).enter_15_digit_gst_number} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+              const SizedBox(height: 10,),
+              InputTextField(
+                formKey: provider.gstNoFormKey,
+                controller: provider.gstNoTextField,
+                errorText: provider.gstNoErrorText,
+                hintText: '',
+                labelText: '',
+                cursorColor: AppColors.sellerTextFieldTextColor,
+                textColor: AppColors.sellerTextFieldTextColor,
+                focusedBorderColor: AppColors.sellerTextFieldBorder,
+                inactiveBorderColor: AppColors.sellerTextFieldBorder,
+                onTextChange: (value) {
+                  int cursorPosition = provider.gstNoTextField.selection.base.offset;
+                  provider.gstNoTextField.text = value.toUpperCase();
+                  if (cursorPosition <= provider.gstNoTextField.text.length) {
+                    provider.gstNoTextField.selection = TextSelection.collapsed(offset: cursorPosition);
+                  } else {
+                    provider.gstNoTextField.selection = TextSelection.collapsed(offset: provider.gstNoTextField.text.length);
+                  }
+                  provider.validGstNumber(context, value);
+                },
+              ),
+
+
+              RadioListTile(
+                  hoverColor: Colors.transparent,
+                  dense: true,
+                activeColor: Colors.transparent,
+                title: Text(AppLocalizations.of(context).i_sell_only_books),
+                  value: 2, groupValue: provider.rxSellGstProducts.value, onChanged: (value){
+                provider.rxSellGstProducts.value = value ?? 0;
+                if(provider.rxSellGstProducts.value == 1){
+                  provider.validGstNumber<bool>(context, provider.gstNoTextField.text);
+                }else{
+                  provider.validPanNumber<bool>(context, provider.panNoTextField.text);
+                }
+                provider.notifyListener();
+              })
+
+            ],
+          );
+        }else{
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(child: Text(AppLocalizations.of(context).add_pan_card_details, style: FontStyles.labelMedium.copyWith(fontWeight: FontWeight.bold, color: AppColors.primaryTextColor),)),
+              const SizedBox(height: 10,),
+              Center(child: Text(AppLocalizations.of(context).pan_number_mandatory_info, style: FontStyles.labelSmall.copyWith(color: AppColors.defaultTextColor),)),
+              const SizedBox(height: 20,),
+              Text('${AppLocalizations.of(context).enter_10_digit_pan_number} *', style: FontStyles.labelSmall.copyWith(color: AppColors.primaryTextColor),),
+              const SizedBox(height: 10,),
+              InputTextField(
+                formKey: provider.panNoFormKey,
+                controller: provider.panNoTextField,
+                errorText: provider.panNoErrorText,
+                hintText: '',
+                labelText: '',
+                cursorColor: AppColors.sellerTextFieldTextColor,
+                textColor: AppColors.sellerTextFieldTextColor,
+                focusedBorderColor: AppColors.sellerTextFieldBorder,
+                inactiveBorderColor: AppColors.sellerTextFieldBorder,
+                onTextChange: (value) {
+                  int cursorPosition = provider.panNoTextField.selection.base.offset;
+                  provider.panNoTextField.text = value.toUpperCase();
+                  if (cursorPosition <= provider.panNoTextField.text.length) {
+                    provider.panNoTextField.selection = TextSelection.collapsed(offset: cursorPosition);
+                  } else {
+                    provider.panNoTextField.selection = TextSelection.collapsed(offset: provider.panNoTextField.text.length);
+                  }
+                  provider.validPanNumber(context, provider.panNoTextField.text);
+                },
+              ),
+              RadioListTile(
+                hoverColor: Colors.transparent,
+                  dense: true,
+                  title: Text(AppLocalizations.of(context).i_have_a_gst_number),
+                  value: 1, groupValue: provider.rxSellGstProducts.value, onChanged: (value){
+                provider.rxSellGstProducts.value = value ?? 0;
+                if(provider.rxSellGstProducts.value == 1){
+                  provider.validGstNumber<bool>(context, provider.gstNoTextField.text);
+                }else{
+                  provider.validPanNumber<bool>(context, provider.panNoTextField.text);
+                }
+              })
+            ],
+          );
+        }
+      }
     );
   }
   Widget buildStoreDetails(CreateContractViewModel provider){
@@ -365,21 +463,32 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
       child: CustomButton(
           buttonText: AppLocalizations.of(context).next_button_text,
           onPressed: () {
-            if(currentIndex == 0){
-              if(provider.checkBasicDetails(context)){
-                provider.setStepCompleted(currentIndex, true);
-                provider.goToNextStep(currentIndex);
-              }
-            }else if(currentIndex == 1){
-              // For index 1
+            if(enableDisableButtonBg(currentIndex,provider)){
+              provider.setStepCompleted(currentIndex, true);
+              provider.goToNextStep(currentIndex);
             }
           },
           isLoading: isLoading,
           loadingColor: AppColors.white,
-          backgroundColor: provider.checkBasicDetails(context)?  AppColors.primaryColor : AppColors.greyButtonBg,
+          backgroundColor: enableDisableButtonBg(currentIndex, provider)?  AppColors.primaryColor : AppColors.greyButtonBg,
           textStyle: FontStyles.labelMedium
               .copyWith(color: AppColors.white)),
     );
+  }
+
+
+  bool enableDisableButtonBg(int currentIndex, CreateContractViewModel provider){
+    if(currentIndex ==0){
+      return provider.checkBasicDetails(context);
+    }else if (currentIndex == 1){
+      if(provider.rxSellGstProducts.value == 1){
+        return provider.validGstNumber<bool>(context, provider.gstNoTextField.text);
+      }else{
+        return provider.validPanNumber<bool>(context, provider.panNoTextField.text);
+      }
+    }
+
+    return false;
   }
 
 

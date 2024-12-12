@@ -15,16 +15,23 @@ class CreateContractViewModel extends ChangeNotifier{
   final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> confirmPasswordFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> gstNoFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> panNoFormKey = GlobalKey<FormState>();
   TextEditingController firstNameController = TextEditingController(text: "");
   TextEditingController lastNameController = TextEditingController(text: "");
   TextEditingController emailController = TextEditingController(text: "");
   TextEditingController passwordController = TextEditingController(text: "");
   TextEditingController confirmPasswordController = TextEditingController(text: "");
+  TextEditingController gstNoTextField = TextEditingController(text: "");
+  TextEditingController panNoTextField = TextEditingController(text: "");
   String? firstNameErrorText;
   String? lastNameErrorText;
   String? emailErrorText;
   String? passwordErrorText;
   String? confirmPasswordErrorText;
+  String? gstNoErrorText;
+  String? panNoErrorText;
+  ValueNotifier<int> rxSellGstProducts = ValueNotifier<int>(1);
 
   setInitialStepperData(){
     stepperData.clear();
@@ -101,6 +108,48 @@ class CreateContractViewModel extends ChangeNotifier{
     }
   }
 
+  T validGstNumber<T>(context, String value){
+    if(T == dynamic){
+      if(PatternValidator.isValidGstNumber(context, value)?? false){
+        gstNoErrorText = '';
+      }else{
+        gstNoErrorText = AppLocalizations.of(context).please_enter_a_valid_gst_number;
+      }
+
+      notifyListeners();
+      return (gstNoErrorText?.isEmpty ?? true) as T;
+    }else{
+      String gstNoErrorText = '';
+      if(PatternValidator.isValidGstNumber(context, value)?? false){
+         gstNoErrorText = '';
+      }else{
+        gstNoErrorText = AppLocalizations.of(context).please_enter_a_valid_gst_number;
+      }
+      return (gstNoErrorText.isEmpty) as T;
+    }
+  }
+
+
+  T validPanNumber<T>(context, String value){
+    if(T == dynamic){
+      if(PatternValidator.isValidPanNumber(context, value)?? false){
+        panNoErrorText = '';
+      }else{
+        panNoErrorText = AppLocalizations.of(context).please_enter_a_valid_pan_card_number;
+      }
+      notifyListeners();
+      return (panNoErrorText?.isEmpty ?? true) as T;
+    }else{
+      String panNoErrorText = '';
+      if(PatternValidator.isValidPanNumber(context, value)?? false){
+        panNoErrorText = '';
+      }else{
+        panNoErrorText = AppLocalizations.of(context).please_enter_a_valid_pan_card_number;
+      }
+      return (panNoErrorText.isEmpty) as T;
+    }
+  }
+
 
   setStepCompleted(int index, bool isCompleted){
     stepperData[index].stepCompleted = isCompleted;
@@ -138,5 +187,9 @@ class CreateContractViewModel extends ChangeNotifier{
     return false;
   }
 
+
+  void notifyListener(){
+    notifyListeners();
+  }
 
 }

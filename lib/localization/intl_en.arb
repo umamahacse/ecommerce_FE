@@ -52,5 +52,15 @@
   "add_general_information" : "Add General Information",
   "fill_out_the_basic_details_for_this_contract" : "Fill out the basic details for this contract",
   "fill_out_the_basic_details_for_this_contract" : "Fill out the basic details for this contract",
-  "optional" : "optional"
+  "optional" : "optional",
+  "add_gst_information" : "Add GST Information",
+  "gst_number_mandatory_text" : "GST Number is mandatory to sell online",
+  "enter_15_digit_gst_number" : "Enter 15 digit GST number",
+  "add_pan_card_details" : "Add PAN card details",
+  "pan_number_mandatory_info" : "Pan details is Mandatory to sell non-GST goods",
+  "enter_10_digit_pan_number" : "Enter 10 digit PAN card number",
+  "please_enter_a_valid_gst_number" : "Please enter valid GST number",
+  "please_enter_a_valid_pan_card_number" : "Please enter a valid PAN card number",
+  "i_have_a_gst_number" : "I have GST number",
+  "i_sell_only_books" : "I only sell non-GST categories, like Books etc"
 }
