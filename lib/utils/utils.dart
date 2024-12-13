@@ -1,3 +1,4 @@
+import 'package:path/path.dart' as p;
 class Utils{
 
   static List<String> getDialCodes(){
@@ -203,4 +204,9 @@ class Utils{
 
     return dialCodes;
   }
+
+
+  static String getFileExtension(String path, [int level = 1]) =>
+      p.extension(path, level);
+
 }

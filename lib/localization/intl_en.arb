@@ -62,5 +62,18 @@
   "please_enter_a_valid_gst_number" : "Please enter valid GST number",
   "please_enter_a_valid_pan_card_number" : "Please enter a valid PAN card number",
   "i_have_a_gst_number" : "I have GST number",
-  "i_sell_only_books" : "I only sell non-GST categories, like Books etc"
+  "i_sell_only_books" : "I only sell non-GST categories, like Books etc",
+  "pan_name" : "PAN name",
+  "upload_pan_document" : "Upload PAN document",
+  "upload" : "Upload",
+  "drag_here_to_upload" : "Drag file here to upload",
+  "the_selected_file_is_not_allowed" : "The selected file is not allowed",
+  "clear_file" : "Clear file",
+  "allowed_extension" : "Allowed Extensions",
+  "please_enter_pan_name" : "Please enter PAN name",
+  "personal_information" : "Personal Information",
+  "gst_verification" : "GST Verification",
+  "store_details" : "Store Details",
+  "tax_and_account_information" : "Tax and Account Information",
+  "shipping_information" : "Shipping Information"
 }

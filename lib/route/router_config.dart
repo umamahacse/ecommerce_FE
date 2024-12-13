@@ -43,8 +43,9 @@ class AppRouter {
       ),
       GoRoute(
           path: AppPages.auth+AppPages.sellerCreateContract,
+          name: NamedRoute.sellerContractCreate,
           builder: (BuildContext context, GoRouterState state) {
-            return CreateContractScreen();
+            return CreateContractScreen(step: state.uri.queryParameters['step']);
           }
       ),
     ],

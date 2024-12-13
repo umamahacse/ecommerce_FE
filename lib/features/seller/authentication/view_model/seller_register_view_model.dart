@@ -280,7 +280,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
             verifyOtpLoading = false;
             notifyListeners();
             if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
-              context.go(AppPages.auth+AppPages.sellerCreateContract);
+              context.goNamed(NamedRoute.sellerContractCreate,queryParameters: {'step' : '1'});
             }else{
               CustomSnackbar(
                   message: onValue.errorResponseModel!.message ?? "",
