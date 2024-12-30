@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_request_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_request_model.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_response_model.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../common/widget/shared/custom_snackbar.dart';
@@ -280,6 +281,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
             verifyOtpLoading = false;
             notifyListeners();
             if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
+              setStorageValues(onValue);
               context.goNamed(NamedRoute.sellerContractCreate,queryParameters: {'step' : '1'});
             }else{
               CustomSnackbar(
@@ -310,11 +312,11 @@ class SellerRegisterViewModel extends ChangeNotifier{
   }
 
 
-  void setStorageValues(SellerRegisterModel? registerData) async{
-    _secureStorage.setUserEmail(registerData?.data?.email ?? '');
-    _secureStorage.setUserFirstName(registerData?.data?.firstName ?? '');
-    _secureStorage.setUserLastName(registerData?.data?.lastName ?? '');
-    _secureStorage.setAccessToken(registerData?.accessToken ?? '');
+  void setStorageValues(SellerVerifyOTPResponseModel? registerData) async{
+    _secureStorage.setUserEmail(registerData?.sellerVerifyOTPRegisterModel?.data?.email ?? '');
+    _secureStorage.setUserFirstName(registerData?.sellerVerifyOTPRegisterModel?.data?.firstName ?? '');
+    _secureStorage.setUserLastName(registerData?.sellerVerifyOTPRegisterModel?.data?.lastName ?? '');
+    _secureStorage.setAccessToken(registerData?.sellerVerifyOTPRegisterModel?.token ?? '');
   }
 
   void toggleOtpScreen(bool? openVerifyOtpScreen){
