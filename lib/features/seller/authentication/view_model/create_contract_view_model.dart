@@ -1,16 +1,21 @@
 
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_create_contract_request_model.dart';
 import 'package:frontend_ecommerce/route/router_constant.dart';
 
+import '../../../../common/widget/shared/custom_snackbar.dart';
+import '../../../../data/data_source/seller/seller_data_source.dart';
+import '../../../../utils/utils.dart';
 import '../../../../utils/validators/pattern_validator.dart';
 import '../../../shared/model/stepper_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:html' as html;
 
 class CreateContractViewModel extends ChangeNotifier{
-
+  final SellerDataSourceImpl sellerDataSource = SellerDataSourceImpl();
   final int? steps = 5;
   final List<StepperData> stepperData = [];
   final GlobalKey<FormState> firstNameFormKey = GlobalKey<FormState>();
@@ -40,6 +45,7 @@ class CreateContractViewModel extends ChangeNotifier{
   ValueNotifier<int> rxSellGstProducts = ValueNotifier<int>(1);
   FilePickerResult filePickerResult = const FilePickerResult([]);
   ValueNotifier<bool> isDragging = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isBottomButtonLoading = ValueNotifier<bool>(false);
 
   setInitialStepperData(context, {int currentStep = -1}){
     stepperData.clear();
@@ -50,23 +56,8 @@ class CreateContractViewModel extends ChangeNotifier{
     stepperData.add(StepperData(headerTitle: AppLocalizations.of(context).shipping_information,isCurrentStep: false, stepCompleted: false));
 
 
-    if(currentStep > stepperData.length){
-      /// Todo: check from the api and set the current step and also how many steps completed
-      stepperData[0].isCurrentStep =true;
-    }else{
-      for(int i = 0; i <= currentStep; i++){
-        if(i + 1 == currentStep){
-          stepperData[i].isCurrentStep = true;
-        }
 
-        // Todo: To implement the steps completed from api.
-        // For now i have implemented like, if current step is 3 then all the previous steps by default set as completed.
-        if(i < (currentStep -1)){
-          stepperData[i].stepCompleted = true;
-        }
-      }
-    }
-    notifyListeners();
+    getContractDetails(context);
   }
 
 
@@ -252,4 +243,105 @@ class CreateContractViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+
+  void getContractDetails(BuildContext context) async{
+    try{
+
+      await sellerDataSource
+          .getContractDetails(context)
+          ?.then((onValue) async {
+        isBottomButtonLoading.value = false;
+        if (onValue.sellerCreateContractModel != null) {
+          if (onValue.sellerCreateContractModel?.status == 200) {
+            int currentStep = onValue.sellerCreateContractModel?.data?.stepIndex ?? 1;
+            updateStepInUrl(currentStep);
+              for(int i = 0; i <= currentStep; i++){
+                if(i + 1 == currentStep){
+                  stepperData[i].isCurrentStep = true;
+                }
+
+                if(i < (currentStep -1)){
+                  stepperData[i].stepCompleted = true;
+                }
+              }
+            notifyListeners();
+          } else {
+            CustomSnackbar(
+                message: onValue.errorResponseModel!.message ?? "",
+                context: context)
+                .showSnackbar();
+          }
+        } else {
+          CustomSnackbar(
+              message: onValue.errorResponseModel!.message ?? "",
+              context: context)
+              .showSnackbar();
+        }
+      });
+
+
+    }on DioException catch(e){
+      Utils.showApiExceptionError(e, context);
+    }
+  }
+
+
+
+
+
+
+  void updateDetails(BuildContext context, int currentIndex) async {
+    try {
+      SellerCreateContractRequestModel sellerCreateContractRequestModel =
+          SellerCreateContractRequestModel();
+
+      if (currentIndex == 0) {
+        sellerCreateContractRequestModel = SellerCreateContractRequestModel(
+            firstName: firstNameController.text,
+            lastName: lastNameController.text,
+            email: emailController.text,
+            password: passwordController.text,
+            confirmPassword: confirmPasswordController.text,
+            stepIndex: currentIndex + 2);
+      } else if (currentIndex == 1) {
+        if (rxSellGstProducts.value == 1) {
+          sellerCreateContractRequestModel = SellerCreateContractRequestModel(
+              stepIndex: currentIndex + 2, gstNumber: gstNoTextField.text);
+        } else {
+          sellerCreateContractRequestModel = SellerCreateContractRequestModel(
+              stepIndex: currentIndex + 2,
+              panNumber: panNoTextField.text,
+              panName: panNameTextField.text);
+        }
+      } else if (currentIndex == 2) {
+      } else if (currentIndex == 3) {
+      } else if (currentIndex == 4) {}
+
+      isBottomButtonLoading.value = true;
+      await sellerDataSource
+          .createContract(context, sellerCreateContractRequestModel)
+          ?.then((onValue) async {
+        isBottomButtonLoading.value = false;
+        if (onValue.sellerCreateContractModel != null) {
+          if (onValue.sellerCreateContractModel?.status == 200) {
+            setStepCompleted(currentIndex, true);
+            goToNextStep(currentIndex);
+          } else {
+            CustomSnackbar(
+                    message: onValue.errorResponseModel!.message ?? "",
+                    context: context)
+                .showSnackbar();
+          }
+        } else {
+          CustomSnackbar(
+                  message: onValue.errorResponseModel!.message ?? "",
+                  context: context)
+              .showSnackbar();
+        }
+      });
+    } on DioException catch (e) {
+      isBottomButtonLoading.value = false;
+      Utils.showApiExceptionError(e, context);
+    }
+  }
 }

@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
+
+import '../common/widget/shared/custom_snackbar.dart';
 class Utils{
 
   static List<String> getDialCodes(){
@@ -208,5 +211,13 @@ class Utils{
 
   static String getFileExtension(String path, [int level = 1]) =>
       p.extension(path, level);
+
+  static showApiExceptionError(dynamic error, BuildContext context){
+    CustomSnackbar(
+        message: error.response?.data != null ? (error.response?.data is Map<String, dynamic> && (error.response?.data as Map<String,dynamic>).containsKey('message') ?  error.response?.data['message']  : 'Something went wrong') : 'Something went wrong',
+        context: context)
+        .showSnackbar();
+  }
+
 
 }

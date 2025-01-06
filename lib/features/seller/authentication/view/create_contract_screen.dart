@@ -381,7 +381,7 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
                   } else {
                     provider.gstNoTextField.selection = TextSelection.collapsed(offset: provider.gstNoTextField.text.length);
                   }
-                  provider.validGstNumber(context, value);
+                  provider.validGstNumber(context, provider.gstNoTextField.text);
                 },
               ),
 
@@ -679,19 +679,20 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
   Widget bottomButton(bool isLoading, CreateContractViewModel provider, int currentIndex,){
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: CustomButton(
-          buttonText: AppLocalizations.of(context).next_button_text,
-          onPressed: () {
-            if(enableDisableButtonBg(currentIndex,provider)){
-              provider.setStepCompleted(currentIndex, true);
-              provider.goToNextStep(currentIndex);
-            }
-          },
-          isLoading: isLoading,
-          loadingColor: AppColors.white,
-          backgroundColor: enableDisableButtonBg(currentIndex, provider)?  AppColors.primaryColor : AppColors.greyButtonBg,
-          textStyle: FontStyles.labelMedium
-              .copyWith(color: AppColors.white)),
+      child: ValueListenableBuilder(valueListenable: provider.isBottomButtonLoading, builder: (context, value, child){
+        return CustomButton(
+            buttonText: AppLocalizations.of(context).next_button_text,
+            onPressed: () {
+              if(enableDisableButtonBg(currentIndex,provider)){
+                provider.updateDetails(context,currentIndex);
+              }
+            },
+            isLoading: value,
+            loadingColor: AppColors.white,
+            backgroundColor: enableDisableButtonBg(currentIndex, provider)?  AppColors.primaryColor : AppColors.greyButtonBg,
+            textStyle: FontStyles.labelMedium
+                .copyWith(color: AppColors.white));
+      })
     );
   }
 

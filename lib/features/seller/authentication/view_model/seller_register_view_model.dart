@@ -10,6 +10,7 @@ import '../../../../common/widget/shared/custom_snackbar.dart';
 import '../../../../data/data_source/seller/seller_data_source.dart';
 import '../../../../data/secured_storage/secured_storage.dart';
 import '../../../../route/router_constant.dart';
+import '../../../../utils/utils.dart';
 import '../../../../utils/validators/pattern_validator.dart';
 import '../model/seller_register_model.dart';
 import '../model/seller_register_request_model.dart';
@@ -211,7 +212,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }on DioException  catch (e){
         registerLoading = false;
         notifyListeners();
-        showApiExceptionError(e, context);
+        Utils.showApiExceptionError(e, context);
       }
     } else {
       if(phoneNumber.isNotEmpty){
@@ -263,7 +264,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
     }on DioException catch (e) {
       registerLoading = false;
       notifyListeners();
-      showApiExceptionError(e, context);
+      Utils.showApiExceptionError(e, context);
     }
   }
 
@@ -301,7 +302,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }on DioException catch (e) {
         verifyOtpLoading = false;
         notifyListeners();
-        showApiExceptionError(e, context);
+        Utils.showApiExceptionError(e, context);
       }
     }else{
       CustomSnackbar(
@@ -324,13 +325,6 @@ class SellerRegisterViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-
-  void showApiExceptionError(dynamic error, BuildContext context){
-    CustomSnackbar(
-        message: error.response?.data != null ? (error.response?.data is Map<String, dynamic> && (error.response?.data as Map<String,dynamic>).containsKey('message') ?  error.response?.data['message']  : 'Something went wrong') : 'Something went wrong',
-        context: context)
-        .showSnackbar();
-  }
 
 
 }
