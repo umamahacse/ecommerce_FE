@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend_ecommerce/common/styles/font_style.dart';
 import 'package:frontend_ecommerce/constants/color_constants.dart';
 import 'package:frontend_ecommerce/features/shared/custom_stepper.dart';
+import 'package:frontend_ecommerce/features/shared/details_footer_section.dart';
 import 'package:frontend_ecommerce/features/shared/dotted_border.dart';
 import 'package:provider/provider.dart';
 
@@ -43,21 +44,24 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
   Widget build(BuildContext context) {
     return Material(
       color: AppColors.white,
-      child: Consumer<CreateContractViewModel>(builder: (context, provider, child){
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < ScreenSizeConstants.mobileBreakPoint) {
-              return mobileLayout(context,provider);
-            } else if (constraints.maxWidth < ScreenSizeConstants.tabletBreakPoint) {
-              return tabletLayout(context,provider);
-            } else if (constraints.maxWidth < ScreenSizeConstants.desktopBreakPoint) {
-              return desktopOrTvLayout(context,provider);
-            } else {
-              return desktopOrTvLayout(context,provider);
+      child: Scaffold(
+        body: Consumer<CreateContractViewModel>(builder: (context, provider, child){
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < ScreenSizeConstants.mobileBreakPoint) {
+                return mobileLayout(context,provider);
+              } else if (constraints.maxWidth < ScreenSizeConstants.tabletBreakPoint) {
+                return tabletLayout(context,provider);
+              } else if (constraints.maxWidth < ScreenSizeConstants.desktopBreakPoint) {
+                return desktopOrTvLayout(context,provider);
+              } else {
+                return desktopOrTvLayout(context,provider);
+              }
             }
-          }
-      );}
-    ));
+        );}
+            ),
+        bottomNavigationBar: DetailsFooterSection(),
+      ));
   }
 
   Widget mobileLayout(BuildContext context, CreateContractViewModel provider){

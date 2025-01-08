@@ -75,5 +75,9 @@
   "gst_verification" : "GST Verification",
   "store_details" : "Store Details",
   "tax_and_account_information" : "Tax and Account Information",
-  "shipping_information" : "Shipping Information"
+  "shipping_information" : "Shipping Information",
+  "save_information_policy_msg" : "This information will be securely saved as per Choice us''s Terms of Service and Privacy Policy",
+  "contact_seller_support" : "Contact Seller Support",
+  "copy_right_text" : "Ⓒ 1999 - 2025 ChoiceUS.com , Inc. or its affiliates",
+  "feedback_capital" : "FEEDBACK"
 }
