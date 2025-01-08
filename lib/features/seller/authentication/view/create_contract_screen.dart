@@ -45,6 +45,38 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
     return Material(
       color: AppColors.white,
       child: Scaffold(
+        backgroundColor: AppColors.white,
+        appBar: AppBar(
+          backgroundColor: AppColors.inActiveBorder,
+          surfaceTintColor: AppColors.inActiveBorder,
+          title: InkWell(
+            onTap: (){},
+            focusColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            child:  Padding(
+              padding: const EdgeInsetsDirectional.only(start: 20),
+              child: Text('ChoiceUs INC',style: FontStyles.labelLarge.copyWith(fontWeight: FontWeight.bold,color: AppColors.primaryColor),),
+            ),
+          ),
+          titleSpacing: 0,
+          centerTitle: false,
+          actions: [
+            InkWell(
+              onTap: (){
+              },
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 20),
+                child: Text('Settings',style: FontStyles.labelMedium.copyWith(fontWeight: FontWeight.bold),),
+              ),
+            )
+          ],
+        ),
         body: Consumer<CreateContractViewModel>(builder: (context, provider, child){
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -60,7 +92,7 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
             }
         );}
             ),
-        bottomNavigationBar: DetailsFooterSection(),
+        bottomNavigationBar: const DetailsFooterSection(),
       ));
   }
 
@@ -185,10 +217,6 @@ class _CreateContractScreenState extends State<CreateContractScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Icon(
-                Icons.keyboard_backspace_outlined,
-                color: AppColors.defaultIconColor,
-              ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
