@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_request_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_request_model.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_response_model.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../common/widget/shared/custom_snackbar.dart';
 import '../../../../data/data_source/seller/seller_data_source.dart';
 import '../../../../data/secured_storage/secured_storage.dart';
 import '../../../../route/router_constant.dart';
+import '../../../../utils/utils.dart';
 import '../../../../utils/validators/pattern_validator.dart';
 import '../model/seller_register_model.dart';
 import '../model/seller_register_request_model.dart';
@@ -210,7 +212,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }on DioException  catch (e){
         registerLoading = false;
         notifyListeners();
-        showApiExceptionError(e, context);
+        Utils.showApiExceptionError(e, context);
       }
     } else {
       if(phoneNumber.isNotEmpty){
@@ -262,12 +264,12 @@ class SellerRegisterViewModel extends ChangeNotifier{
     }on DioException catch (e) {
       registerLoading = false;
       notifyListeners();
-      showApiExceptionError(e, context);
+      Utils.showApiExceptionError(e, context);
     }
   }
 
 
-  verifyOtp(context) async{
+  verifyOtp(BuildContext context) async{
     if(otp.length >= 6){
       verifyOtpLoading = true;
       notifyListeners();
@@ -280,11 +282,8 @@ class SellerRegisterViewModel extends ChangeNotifier{
             verifyOtpLoading = false;
             notifyListeners();
             if(onValue.sellerVerifyOTPRegisterModel?.status == 200 ){
-              // Move to Home page
-              CustomSnackbar(
-                  message: 'OTP Verified',
-                  context: context)
-                  .showSnackbar();
+              setStorageValues(onValue);
+              context.goNamed(NamedRoute.sellerContractCreate,queryParameters: {'step' : '1'});
             }else{
               CustomSnackbar(
                   message: onValue.errorResponseModel!.message ?? "",
@@ -303,7 +302,7 @@ class SellerRegisterViewModel extends ChangeNotifier{
       }on DioException catch (e) {
         verifyOtpLoading = false;
         notifyListeners();
-        showApiExceptionError(e, context);
+        Utils.showApiExceptionError(e, context);
       }
     }else{
       CustomSnackbar(
@@ -314,11 +313,11 @@ class SellerRegisterViewModel extends ChangeNotifier{
   }
 
 
-  void setStorageValues(SellerRegisterModel? registerData) async{
-    _secureStorage.setUserEmail(registerData?.data?.email ?? '');
-    _secureStorage.setUserFirstName(registerData?.data?.firstName ?? '');
-    _secureStorage.setUserLastName(registerData?.data?.lastName ?? '');
-    _secureStorage.setAccessToken(registerData?.accessToken ?? '');
+  void setStorageValues(SellerVerifyOTPResponseModel? registerData) async{
+    _secureStorage.setUserEmail(registerData?.sellerVerifyOTPRegisterModel?.data?.email ?? '');
+    _secureStorage.setUserFirstName(registerData?.sellerVerifyOTPRegisterModel?.data?.firstName ?? '');
+    _secureStorage.setUserLastName(registerData?.sellerVerifyOTPRegisterModel?.data?.lastName ?? '');
+    _secureStorage.setAccessToken(registerData?.sellerVerifyOTPRegisterModel?.token ?? '');
   }
 
   void toggleOtpScreen(bool? openVerifyOtpScreen){
@@ -326,13 +325,6 @@ class SellerRegisterViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-
-  void showApiExceptionError(dynamic error, BuildContext context){
-    CustomSnackbar(
-        message: error.response?.data != null ? (error.response?.data is Map<String, dynamic> && (error.response?.data as Map<String,dynamic>).containsKey('message') ?  error.response?.data['message']  : 'Something went wrong') : 'Something went wrong',
-        context: context)
-        .showSnackbar();
-  }
 
 
 }

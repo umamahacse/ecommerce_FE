@@ -47,4 +47,14 @@ class PatternValidator {
   }
 
 
+  static bool? isValidGstNumber(context, String gstNumber){
+    final regex = RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{1}[A-Z]{1}[0-9A-Z]{1}$');
+    return regex.hasMatch(gstNumber);
+  }
+
+  static bool? isValidPanNumber(context, String panNumber){
+    final regex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
+    return regex.hasMatch(panNumber);
+  }
+
 }

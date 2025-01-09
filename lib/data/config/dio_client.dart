@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_ecommerce/config/endpoints_config.dart';
+import 'package:frontend_ecommerce/data/secured_storage/secured_storage.dart';
 
 class ApiService {
   final Dio _dio = Dio();
@@ -15,9 +16,9 @@ class ApiService {
     // Add interceptors
     _dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async{
           // Modify the request (e.g., add headers or tokens)
-          options.headers['Authorization'] = 'Bearer your_token';
+          options.headers['authorization'] = await getAuthorizationHeader();
           return handler.next(options); // Continue with the request
         },
         onResponse: (response, handler) {
@@ -81,4 +82,19 @@ class ApiService {
       rethrow;
     }
   }
+
+
+
+  Future<String> getAuthorizationHeader() async {
+    final String accessToken = 'Bearer ${await _getToken()}';
+    return accessToken;
+  }
+
+
+  Future<String?> _getToken() async{
+    final SecureStorage secureStorage = SecureStorage();
+    return await secureStorage.getAccessToken();
+  }
+
+
 }

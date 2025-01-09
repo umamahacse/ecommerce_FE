@@ -8,4 +8,9 @@ class AppPages{
   static const String sellerDashBoard = '/seller/dashboard';
   static const String buyerLogin = '/buyer/login';
   static const String buyerDashboard = '/buyer/dashboard';
+  static const String sellerCreateContract = '/seller/creating-contract';
+}
+
+class NamedRoute {
+  static const String sellerContractCreate = 'seller-contract-create';
 }

@@ -2,41 +2,36 @@ import 'package:frontend_ecommerce/features/seller/authentication/model/seller_r
 
 import '../../../shared/model/error_response.dart';
 
-class SellerVerifyOTPRegisterModel {
-  SellerVerifyOTPRegisterModel({
+class SellerCreateContractModel {
+  SellerCreateContractModel({
     required this.status,
-    required this.data,
-    required this.token
+    required this.data
   });
 
   final int? status;
   final Data? data;
-  final String? token;
 
-  SellerVerifyOTPRegisterModel copyWith({
+  SellerCreateContractModel copyWith({
     int? status,
     Data? data,
     String? token
   }) {
-    return SellerVerifyOTPRegisterModel(
+    return SellerCreateContractModel(
         status: status ?? this.status,
-        data: data ?? this.data,
-        token: token ?? this.token
+        data: data ?? this.data
     );
   }
 
-  factory SellerVerifyOTPRegisterModel.fromJson(Map<String, dynamic> json){
-    return SellerVerifyOTPRegisterModel(
+  factory SellerCreateContractModel.fromJson(Map<String, dynamic> json){
+    return SellerCreateContractModel(
         status: json["status"],
         data: json["result"] == null ? null : Data.fromJson(json["result"]),
-        token: json["token"]
     );
   }
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "result": data?.toJson(),
-    "token" : token
   };
 
   @override
@@ -45,12 +40,12 @@ class SellerVerifyOTPRegisterModel {
   }
 }
 
-class SellerVerifyOTPResponseModel{
-  final SellerVerifyOTPRegisterModel? sellerVerifyOTPRegisterModel;
+class SellerCreateContractResponseModel{
+  final SellerCreateContractModel? sellerCreateContractModel;
   final ErrorResponseModel? errorResponseModel;
 
-  SellerVerifyOTPResponseModel({
-    required this.sellerVerifyOTPRegisterModel,
+  SellerCreateContractResponseModel({
+    required this.sellerCreateContractModel,
     required this.errorResponseModel
   });
 }

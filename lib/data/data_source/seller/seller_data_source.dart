@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_ecommerce/data/data_source/seller/seller_api_endpoints.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_create_contract_request_model.dart';
+import 'package:frontend_ecommerce/features/seller/authentication/model/seller_create_contract_response_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_request_model.dart';
 import 'package:frontend_ecommerce/features/seller/authentication/model/seller_otp_verify_response_model.dart';
 
@@ -16,6 +18,8 @@ abstract class BuyerDataSource {
   Future<SellerRegisterResponseModel>? sellerRegister(BuildContext context, SellerRegisterRequestModel data);
   Future<SellerOTPResponseModel>? generateOtp(BuildContext context, SellerOTPRequestModel data);
   Future<SellerVerifyOTPResponseModel>? verifyOtp(BuildContext context, SellerOTPVerifyRequestModel data);
+  Future<SellerCreateContractResponseModel>? createContract(BuildContext context, SellerCreateContractRequestModel data);
+  Future<SellerCreateContractResponseModel>? getContractDetails(BuildContext context);
 }
 
 class SellerDataSourceImpl implements BuyerDataSource{
@@ -75,6 +79,50 @@ class SellerDataSourceImpl implements BuyerDataSource{
       }
 
       return SellerVerifyOTPResponseModel(sellerVerifyOTPRegisterModel: sellerVerifyOTPRegisterModel, errorResponseModel: errorResponseModel);
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+
+  @override
+  Future<SellerCreateContractResponseModel>? createContract(BuildContext context, SellerCreateContractRequestModel data) async{
+    try{
+      final apiService = ApiService(context);
+      ErrorResponseModel? errorResponseModel;
+      SellerCreateContractModel? sellerCreateContractModel;
+
+      Response response = await apiService.post(SellerApiEndpoints.sellerCreateContract, data.toJson());
+      if(response.statusCode == 200){
+        sellerCreateContractModel = SellerCreateContractModel.fromJson(response.data);
+      } else{
+        errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      }
+
+      return SellerCreateContractResponseModel(sellerCreateContractModel: sellerCreateContractModel, errorResponseModel: errorResponseModel);
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+
+  @override
+  Future<SellerCreateContractResponseModel>? getContractDetails(BuildContext context) async{
+    try{
+      final apiService = ApiService(context);
+      ErrorResponseModel? errorResponseModel;
+      SellerCreateContractModel? sellerCreateContractModel;
+
+      Response response = await apiService.get(SellerApiEndpoints.getCreateContractDetails);
+      if(response.statusCode == 200){
+        sellerCreateContractModel = SellerCreateContractModel.fromJson(response.data);
+      } else{
+        errorResponseModel = ErrorResponseModel.fromJson(response.data);
+      }
+
+      return SellerCreateContractResponseModel(sellerCreateContractModel: sellerCreateContractModel, errorResponseModel: errorResponseModel);
     }catch(e){
       rethrow;
     }

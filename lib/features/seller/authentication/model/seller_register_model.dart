@@ -62,6 +62,7 @@ class Data {
     required this.shippingMethod,
     required this.shippingCharge,
     required this.authToken,
+    required this.stepIndex
   });
 
   final int? id;
@@ -74,13 +75,14 @@ class Data {
   final DateTime? createdAt;
   final String? phoneNumber;
   final bool? isOtpVerified;
-  final bool? gstNumber;
+  final String? gstNumber;
   final bool? gstOtpVerified;
   final String? storeName;
   final Pickup? pickUp;
   final String? shippingMethod;
   final String? shippingCharge;
   final String? authToken;
+  final int? stepIndex;
 
   Data copyWith({
     int? id,
@@ -93,13 +95,14 @@ class Data {
     DateTime? createdAt,
     String? phoneNumber,
     bool? isOtpVerified,
-    bool? gstNumber,
+    String? gstNumber,
     bool? gstOtpVerified,
     String? storeName,
     Pickup? pickUp,
     String? shippingMethod,
     String? shippingCharge,
     String? authToken,
+    int? stepIndex
   }) {
     return Data(
       id: id ?? this.id,
@@ -119,6 +122,7 @@ class Data {
       shippingMethod: shippingMethod ?? this.shippingMethod,
       shippingCharge: shippingCharge ?? this.shippingCharge,
       authToken: authToken ?? this.authToken,
+      stepIndex : stepIndex ?? this.stepIndex
     );
   }
 
@@ -141,6 +145,7 @@ class Data {
       shippingMethod: json["shippingMethod"],
       shippingCharge: json["shippingCharge"],
       authToken: json["authToken"],
+      stepIndex: json["stepIndex"]
     );
   }
 
@@ -162,11 +167,12 @@ class Data {
     "shippingMethod": shippingMethod,
     "shippingCharge": shippingCharge,
     "authToken": authToken,
+    "stepIndex" : stepIndex
   };
 
   @override
   String toString() {
-    return "$id, $firstName, $lastName, $email, $password, $confirmPassword, $updatedAt, $createdAt, $phoneNumber, $isOtpVerified, $gstNumber, $gstOtpVerified, $storeName, ${pickUp?.toString()}, $shippingMethod, $shippingCharge, $authToken";
+    return "$id, $firstName, $lastName, $email, $password, $confirmPassword, $updatedAt, $createdAt, $phoneNumber, $isOtpVerified, $gstNumber, $gstOtpVerified, $storeName, ${pickUp?.toString()}, $shippingMethod, $shippingCharge, $authToken, $stepIndex";
   }
 }
 
